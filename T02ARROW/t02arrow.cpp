@@ -67,8 +67,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 {
   HDC hDC;
   PAINTSTRUCT ps;
-  INT x, y, /*i*/;
-  /*POINT pt;*/
+  INT x, y, i;
+  POINT pt;
   static INT W, H;
 
   switch (Msg)
@@ -82,16 +82,16 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     Rectangle(hDC, 0, 0, W, H);
     SelectObject(hDC, GetStockObject(DC_BRUSH));
     SetDCBrushColor(hDC, RGB(0, 200, 180));
-    /*srand(30);
-    for (i = 0; i < 30; i++)
+    srand(70);
+    for (i = 0; i < 70; i++)
     {
       pt.x = rand () % W;
       pt.y = rand () % H;
       DrawArrow(hWnd, hDC, pt.x, pt.y, 30);
-    }*/
-    for (x = 0; x < W; x = x + 80)
+    }
+    /*for (x = 0; x < W; x = x + 80)
       for (y = 0; y < H; y = y + 80)
-        DrawArrow(hWnd, hDC, x, y, 30);
+        DrawArrow(hWnd, hDC, x, y, 30);*/
     EndPaint(hWnd, &ps);
     return 0;
   case WM_ERASEBKGND:
