@@ -2,54 +2,68 @@
 
 #include <stdio.h>
 
-#include <Windows.h>
+#include <windows.h>
 
 #define MAX 3
 INT mas[MAX];
-/*
-VOID Swap( INT *A, INT *B )
+
+VOID Store( VOID )
+{
+  INT i, j, k, invers = 0;
+  FILE *F;
+
+  F = fopen("PERM.TXT", "a");
+  if (F == NULL)
+    return;
+
+  for (j = 0; j < MAX - 1; j++)
+    for (k = j + 1; k < MAX; k++)
+      if (mas[j] > mas[k])
+        invers++;
+
+  for (i = 0; i < MAX; i++)
+    fprintf(F, "%d ", mas[i]);
+  if (invers % 2 == 0)
+    fprintf(F, "even\n");
+  else
+    fprintf(F, "odd\n");
+  fclose(F);
+}
+
+VOID Swap( INT *a, INT *b )
 {
   INT tmp;
   
-  tmp = *A;
-  *A = *B;
-  *B = tmp;
+  tmp = *a;
+  *a = *b;
+  *b = tmp;
 }
-
 
 VOID Go( INT Pos )
 {
-  INT i, j;
+  INT j;
   
-  if (Pos == MAX - 1)
-    for (i = 0; i < MAX; i++)
+  if (Pos == MAX)
   {
-    mas[i] =  i + 1;
-    printf("%i ", mas[i]);
+    Store();
+    return;
   }
   else
-  {
     for (j = Pos; j < MAX; j++)
     {
       Swap(&mas[Pos], &mas[j]);
       Go(Pos + 1);
       Swap(&mas[Pos], &mas[j]);
     }
-  }
 }
-*/
 
-VOID Store( VOID )
+VOID main( VOID )
 {
   INT i;
-  FILE *F;
-
-  F = fopen("PERM.TXT", "a");
-  if (F != NULL)
-    return;
 
   for (i = 0; i < MAX; i++)
-    fprintf(F, "%d%s", mas[i], i < MAX - 1 ? "even" : "odd");
-  fprintf(F, "\n");
-  fclose(F);
+    mas[i] = i + 1;
+  Go(0);
 }
+
+
