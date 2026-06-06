@@ -64,7 +64,7 @@ VOID Go( INT Pos, DBL *Det)
   {
     for (prod = 1, i = 0; i < N; i++)
       prod *= A[i][mas[i]];
-    if (IsParity)
+    if (IsParity())
       *Det += prod;
     else
       *Det -= prod;
@@ -93,4 +93,4 @@ VOID main( VOID )
   getchar();
 }
 
-
+ 
