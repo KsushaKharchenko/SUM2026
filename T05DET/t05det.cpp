@@ -88,7 +88,7 @@ VOID main( VOID )
   for (i = 0; i < N; i++)
     mas[i] = i;
   Go(0, &Det);
-  printf("DET = %i", Det);
+  printf("DET = %f", Det);
   getchar();
   getchar();
 }
