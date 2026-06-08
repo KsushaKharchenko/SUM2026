@@ -1,18 +1,23 @@
 /* Kharchenko Ksenia, 10-6, 06.06.2026 */
+
 #include <windows.h>
 #include <math.h>
+#include <stdio.h>
+#include <time.h>
+
 #include "globe.h"
+
 #define WND_CLASS_NAME "LaLaLa"
 
 
 
-
- 
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
+
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline, INT ShowCmd )
 {
   WNDCLASS wc;
   MSG msg;
+  HWND hWnd;
  
   /* window class register */
  
@@ -33,13 +38,21 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
     return 0;
   }
   /* create window */
-  CreateWindow(WND_CLASS_NAME, "Globe", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 100, 100, 800, 800, NULL, NULL, hInstance, NULL);
-  /*main program loop */
-  while (GetMessage(&msg, NULL, 0, 0))
+  hWnd = CreateWindow(WND_CLASS_NAME, "Globe", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 100, 100, 800, 800, NULL, NULL, hInstance, NULL);
+
+  /* main program loop */
+  while (TRUE)
   {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+    {
+      if (msg.message == WM_QUIT)
+        break;
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+    }
+    SendMessage(hWnd, WM_TIMER, 30, 0);
   }
+  return 0;
 }
  
 
@@ -47,6 +60,11 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 {
   HDC hDC;
   PAINTSTRUCT ps;
+  MINMAXINFO *minmax;
+  INT t;
+  static DBL FPS = 30;
+  static INT StartTime, FrameCount;
+  static CHAR Buf[102];
   static INT W, H;
   static HBITMAP hBm;
   static HDC hMemDC;
@@ -54,14 +72,26 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   
   switch (Msg)
   {
+  case WM_GETMINMAXINFO:
+    minmax = (MINMAXINFO *)lParam;
+    minmax->ptMinTrackSize.y += 100;
+    minmax->ptMaxTrackSize.y = GetSystemMetrics(SM_CYMAXTRACK) + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYBORDER) * 2;
+    return 0;
+
   case WM_CREATE:
+    SetTimer(hWnd, 30, 1, NULL);
     hDC = GetDC(hWnd);
     hMemDC = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
+    hBm = NULL;
 
-    GLB_Init(150.0);
-    SetTimer(hWnd, 1, 8, NULL);
+    GLB_Init(0.8);
+
+    FrameCount = 0;
+    StartTime = clock();
+
     return 0;
+
   case WM_SIZE:
     W = LOWORD(lParam);
     H = HIWORD(lParam);
@@ -73,28 +103,60 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     hBm = CreateCompatibleBitmap(hDC, W, H);
     ReleaseDC(hWnd, hDC);
     SelectObject(hMemDC, hBm);
-    SendMessage(hWnd, WM_TIMER, 0, 0);
-    return 0;
-  case WM_TIMER:
-    GLB_Draw(hMemDC);
 
-    hDC = GetDC(hWnd);
-    BitBlt(hDC, 0, 0, W, H, hMemDC, 0, 0, SRCCOPY);
-    ReleaseDC(hWnd, hDC);
+    SendMessage(hWnd, WM_TIMER, 30, 0);
     return 0;
+
+  case WM_TIMER:
+    FrameCount++;
+    t = clock();
+    if (t - StartTime > CLOCKS_PER_SEC)
+    {
+      FPS = FrameCount / ((t - StartTime) / (DBL)CLOCKS_PER_SEC);
+      FrameCount = 0;
+      StartTime = t;
+    }
+    if (W > 0 && H > 0)
+    {
+      /* Clear frame */
+      SelectObject(hMemDC, GetStockObject(DC_BRUSH));
+      SelectObject(hMemDC, GetStockObject(DC_PEN));
+      SetDCBrushColor(hMemDC, RGB(255, 255, 255));
+      SetDCPenColor(hMemDC, RGB(255, 255, 255));
+      Rectangle(hMemDC, 0, 0, W, H);
+
+      /* Draw frame contents */
+      GLB_Draw(hMemDC);
+
+      TextOut(hMemDC, 0, 0, Buf, sprintf(Buf, "FPS: %.5f", FPS));
+
+      /* Copy frame to screen */
+      hDC = GetDC(hWnd);
+      BitBlt(hDC, 0, 0, W, H, hMemDC, 0, 0, SRCCOPY);
+      ReleaseDC(hWnd, hDC);
+    }
+    return 0;
+
+  case WM_KEYDOWN:
+    if (wParam == VK_ESCAPE)
+      SendMessage(hWnd, WM_CLOSE, 0, 0);
+    return 0;
+
+  case WM_ERASEBKGND:
+    return 1;
+
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
     BitBlt(hDC, 0, 0, W, H, hMemDC, 0, 0, SRCCOPY);
     EndPaint(hWnd, &ps);
     return 0;
-  case WM_ERASEBKGND:
-    return 0;
+
   case WM_DESTROY:
+    PostMessage(NULL, WM_QUIT, 0, 0);
+    KillTimer(hWnd, 30);
     if (hBm != NULL)
       DeleteObject(hBm);
     DeleteDC(hMemDC);
-    KillTimer(hWnd, 30);
-    PostMessage(NULL, WM_QUIT, 0, 0);
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);

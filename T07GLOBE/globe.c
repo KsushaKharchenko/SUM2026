@@ -1,13 +1,33 @@
 /* Kharchenko Ksenia, 10-6, 06.06.2026 */
+
 #include <windows.h>
 #include <math.h>
 #include <time.h>
+#include <stdlib.h>
+
 #include "globe.h"
 
-static INT GLB_Ws, GLB_Hs;
+#define GLB_MIN(A, B) ((A) < (B) ? (A) : (B))
+#define GLB_MAX(A, B) ((A) > (B) ? (A) : (B))
+
 static VEC Geom[GRID_H][GRID_W];
-static DBL PI = 3.1415926535;
+static VEC GeomN[GRID_H][GRID_W];
+static INT GLB_Ws, GLB_Hs;
 static DBL GLB_ProjSize = 1, GLB_ProjDist = 1, GLB_Wp, GLB_Hp;
+
+
+COLORREF ColorTo255( VEC Color )
+{
+  INT
+    R = (INT)(Color.X * 255),
+    G = (INT)(Color.Y * 255),
+    B = (INT)(Color.Z * 255);
+
+  R = GLB_MIN(255, GLB_MAX(0, R));
+  G = GLB_MIN(255, GLB_MAX(0, G));
+  B = GLB_MIN(255, GLB_MAX(0, B));
+  return RGB(R, G, B);
+}
 
 VEC RotateZ( VEC P, DBL Angle )
 {
@@ -53,11 +73,23 @@ VOID GLB_Init( DBL r )
     for (j = 0; j < GRID_W; j++)
     {
       phi = j * 2 * PI / (GRID_W - 1);
-      Geom[i][j].X = r * sin(theta) * sin(phi);//* GLB_Ws / GLB_Wp + GLB_Ws / 2;
-      Geom[i][j].Y = r * cos(theta); //* GLB_Hs / GLB_Hp) + GLB_Hs / 2;
+      GeomN[i][j].X = sin(theta) * sin(phi);
+      GeomN[i][j].Y = cos(theta); 
+      GeomN[i][j].Z = sin(theta) * cos(phi);
+
+      Geom[i][j].X = r * sin(theta) * sin(phi);
+      Geom[i][j].Y = r * cos(theta); 
       Geom[i][j].Z = r * sin(theta) * cos(phi);
     }
   }
+
+  for (i = 0; i < GRID_H - 1; i++)
+    for (j = 0; j < GRID_W - 1; j++)
+    {
+      VEC N1 = VecNormalize(VecCrossVec(VecSubVec(Geom[i][j + 1], Geom[i][j]), VecSubVec(Geom[i + 1][j], Geom[i][j])));
+      VEC N2 = VecNormalize(VecCrossVec(VecSubVec(Geom[i + 1][j], Geom[i + 1][j + 1]), VecSubVec(Geom[i][j + 1], Geom[i + 1][j + 1])));
+      GeomN[i][j] = VecNeg(VecNormalize(VecAddVec(N1, N2)));
+    }
 }
 
 VOID GLB_Resize( INT Ws, INT Hs)
@@ -65,45 +97,109 @@ VOID GLB_Resize( INT Ws, INT Hs)
   GLB_Ws = Ws;
   GLB_Hs = Hs;
   if (GLB_Ws >= GLB_Hs)
-    GLB_Wp = GLB_ProjSize * GLB_Ws / GLB_Wp, 
+    GLB_Wp = GLB_ProjSize * GLB_Ws / GLB_Hs, 
     GLB_Hp = GLB_ProjSize;
   else
-    GLB_Hp = GLB_ProjSize * GLB_Hs / GLB_Hp,
+    GLB_Hp = GLB_ProjSize * GLB_Hs / GLB_Ws,
     GLB_Wp = GLB_ProjSize;
 }
 
 VOID GLB_Draw( HDC hDC)
-{
-   static POINT pts[GRID_H][GRID_W]; 
+{ 
    INT i, j, s = 2;
-   DBL t;
-   VEC P;
+   DBL 
+     t = (DOUBLE)clock() / CLOCKS_PER_SEC,
+     Xp, Yp, nl;
+   VEC P, N, L, L1, C = {0.3, 0.8, 0.5};
+   POINT pts[4];
+   MATR m;
+   static POINT pnts[GRID_H][GRID_W];
 
-   t = 8 * (DOUBLE)clock() / CLOCKS_PER_SEC;
+   /*SelectObject(hDC, GetStockObject(NULL_PEN));
+   SelectObject(hDC, GetStockObject(DC_BRUSH));
+   SetDCBrushColor(hDC, RGB(0, 255, 255));*/
+
+   m = MatrMulMatr(MatrMulMatr(MatrRotateX(8 * t), MatrMulMatr(MatrRotateZ(47 * t), MatrRotateY(60 * t))), MatrTranlate(VecSet(0, 0, -3)));
+
+   /* coordinate system */
    for (i = 0; i < GRID_H; i++)
      for (j = 0; j < GRID_W; j++)
      {
-       P = Geom[i][j];
-       P = RotateZ(P, 47 + t);
-       P = RotateY(P, 60 + t);
-       pts[i][j].x = GLB_Ws / 2 + (LONG)(P.X);
-       pts[i][j].y = GLB_Hs / 2 - (LONG)(P.Y);
+       /* Wolrd */
+       P = PointTransform(Geom[i][j], m);
+
+       /* Top project plabne */
+       Xp = P.X * GLB_ProjDist / -P.Z;
+       Yp = P.Y * GLB_ProjDist / -P.Z;
+
+       /* To screen (viewport transform) */
+       pnts[i][j].x = (INT)(Xp * GLB_Ws / GLB_Wp + GLB_Ws / 2);
+       pnts[i][j].y = (INT)(-Yp * GLB_Hs / GLB_Hp + GLB_Hs / 2);
      }
      
-     SelectObject(hDC, GetStockObject(DC_BRUSH));
-     SetDCBrushColor(hDC, RGB(0, 255, 255));
-     for (i = 0; i < GRID_H; i++)
+     /* point */
+     
+     /*for (i = 0; i < GRID_H; i++)
        for (j = 0; j < GRID_W; j++)
-         Ellipse(hDC, pts[i][j].x - s, pts[i][j].y - s,
-         pts[i][j].x + s, pts[i][j].y + s);
-     SelectObject(hDC, GetStockObject(DC_PEN));
+         Ellipse(hDC, pnts[i][j].x - s, pnts[i][j].y - s,
+           pnts[i][j].x + s, pnts[i][j].y + s);*/
+     
+
+     /* line */
+     
+     /*SelectObject(hDC, GetStockObject(DC_PEN));
      SetDCPenColor(hDC, RGB(0, 255, 255));
+     
      for (i = 0; i < GRID_H; i++)
+     {
+       MoveToEx(hDC, pnts[i][0].x, pnts[i][0].y, NULL);
        for (j = 1; j < GRID_W; j++)
+         LineTo(hDC, pnts[i][j].x, pnts[i][j].y);
+     }
+
+     for (j = 0; j < GRID_W; j++)
+     {
+       MoveToEx(hDC, pnts[0][j].x, pnts[0][j].y, NULL);
+       for (i = 1; i < GRID_H; i++)
+         LineTo(hDC, pnts[i][j].x, pnts[i][j].y);
+     }*/
+     
+
+     /* facets */
+     SelectObject(hDC, GetStockObject(NULL_PEN));
+     SelectObject(hDC, GetStockObject(DC_BRUSH));
+     SetDCBrushColor(hDC, RGB(180, 80, 180));
+
+     L = VecNormalize(VecSet(2, 1, 1));
+     L1 = VecNormalize(VecSet(-2, 1, 1));
+
+     for (i = 0; i < GRID_H - 1; i++)
+       for (j = 0; j < GRID_W - 1; j++)
        {
-         MoveToEx(hDC, pts[i][0].x, pts[i][0].y, NULL);
-         LineTo(hDC, pts[i][j].x, pts[i][j].y);
+         N = VectorTransform(GeomN[i][j], m);
+         nl = VecDotVec(N, L);
+         if (nl < 0.1)
+           nl = 0.1;
+         C = VecMulNum(VecSet(0, 0.8, 1), nl);
+
+         nl = VecDotVec(N, L1);
+         if (nl < 0.1)
+           nl = 0.1;
+         C = VecAddVec(C, VecMulNum(VecSet(0.30, 0.8, 0.47), nl));
+
+         pts[0] = pnts[i][j];
+         pts[1] = pnts[i][j + 1];
+         pts[2] = pnts[i + 1][j + 1];
+         pts[3] = pnts[i + 1][j];
+
+         SetDCBrushColor(hDC, ColorTo255(C));
+         /* SetDCBrushColor(hDC, ColorTo255(VecDivNum(VecAddVec(N, VecSet1(1)), 2))); */
+
+         if ((pts[0].x - pts[1].x) * (pts[0].y + pts[1].y) +
+             (pts[1].x - pts[2].x) * (pts[1].y + pts[2].y) +
+             (pts[2].x - pts[3].x) * (pts[2].y + pts[3].y) +
+             (pts[3].x - pts[0].x) * (pts[3].y + pts[0].y) > 0)
+           Polygon(hDC, pts, 4);
        }
 }
-
 
