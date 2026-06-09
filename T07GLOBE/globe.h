@@ -1,4 +1,9 @@
-/* Kharchenko Ksenia, 10-6, 06.06.2026 */
+/* FILE NAME: mth.h
+ * PURPOSE: 
+ * PROGRAMMER: KH6
+ * DATE: 06.06.2026
+ */
+
 #ifndef __globe_h_
 #define __globe_h_
 

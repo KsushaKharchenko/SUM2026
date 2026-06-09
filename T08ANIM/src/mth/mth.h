@@ -1,7 +1,7 @@
 /* FILE NAME: mth.h
  * PURPOSE: 3D math implementation module.
  * PROGRAMMER: KH6
- * DATE: 08.06.2026
+ * DATE: 09.06.2026
  */
 #ifndef __mth_h_
 #define __mth_h_
@@ -338,6 +338,54 @@ _inline MATR MatrInverse( MATR M )
   return r;
 }
 
+/* Perspective (frustum) projection matrix setup function.
+ * ARGUMENTS:
+ *   - frustum side facets coordinates:
+ *       DBL Left, Right, Bottom, Top, Near, Far;
+ * RETURNS:
+ *   (MATR) result matrix.
+ */
+__inline MATR MatrFrustum( DBL Left, DBL Right, DBL Bottom, DBL Top, DBL Near, DBL Far )
+{
+  MATR m =
+  {
+    {
+      {      2 * Near / (Right - Left),                               0,                              0,  0},
+      {                              0,       2 * Near / (Top - Bottom),                              0,  0},
+      {(Right + Left) / (Right - Left), (Top + Bottom) / (Top - Bottom),   -(Far + Near) / (Far - Near), -1},
+      {                              0,                               0, -2 * Near * Far / (Far - Near),  0}
+    }
+  };
+ 
+  return m;
+} /* End of 'MatrFrustum' function */
+
+/* Matrix look-at viewer setup function.
+ * ARGUMENTS:
+ *   - viewer position, look-at point, approximate up direction:
+ *       VEC Loc, At, Up1;
+ * RETURNS:
+ *   (MATR) result matrix.
+ */
+
+__inline MATR MatrView( VEC Loc, VEC At, VEC Up1 )
+{
+  VEC
+    Dir = VecNormalize(VecSubVec(At, Loc)),
+    Right = VecNormalize(VecCrossVec(Dir, Up1)),
+    Up = VecNormalize(VecCrossVec(Right, Dir));
+  MATR m =
+  {
+    {
+      {Right.X, Up.X, -Dir.X, 0},
+      {Right.Y, Up.Y, -Dir.Y, 0},
+      {Right.Z, Up.Z, -Dir.Z, 0},
+      {-VecDotVec(Loc, Right), -VecDotVec(Loc, Up), VecDotVec(Loc, Dir), 1}
+    }
+  };
+ 
+  return m;
+} /* End of 'MatrView' function */
 _inline VOID PrintMatrix( CHAR *Text, MATR M )
 {
   INT i, j;

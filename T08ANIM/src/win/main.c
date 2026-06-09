@@ -1,20 +1,13 @@
-/* FILE NAME: t07globe.c
- * PURPOSE: 
+/* FILE NAME: main.c
+ * PURPOSE: main file of  project
  * PROGRAMMER: KH6
- * DATE: 06.06.2026
+ * DATE: 09.06.2026
  */
 
-
-#include <windows.h>
-#include <math.h>
-#include <stdio.h>
-#include <time.h>
-
-#include "globe.h"
-#include "timer.h"
+#include "def.h"
+#include "anim/rnd/rnd.h"
 
 #define WND_CLASS_NAME "LaLaLa"
-
 
 
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
@@ -66,14 +59,9 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   HDC hDC;
   PAINTSTRUCT ps;
   MINMAXINFO *minmax;
-  INT t;
-  static DBL FPS = 30;
-  static INT StartTime, FrameCount;
-  static CHAR Buf[102];
-  static INT W, H;
-  static HBITMAP hBm;
-  static HDC hMemDC;
-  static BITMAP bm;
+  VEC p1, p2, p;
+  MATR m;
+  POINT pnts[2];
   
   switch (Msg)
   {
@@ -84,88 +72,54 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     return 0;
 
   case WM_CREATE:
-    GLB_TimerInit();
+    KH6_RndInit(hWnd);
     SetTimer(hWnd, 30, 1, NULL);
-    hDC = GetDC(hWnd);
-    hMemDC = CreateCompatibleDC(hDC);
-    ReleaseDC(hWnd, hDC);
-    hBm = NULL;
-
-    GLB_Init(0.8);
-
-    FrameCount = 0;
-    StartTime = clock();
-
     return 0;
-
+  
   case WM_SIZE:
-    W = LOWORD(lParam);
-    H = HIWORD(lParam);
-    GLB_Resize(W, H);
-
-    if (hBm != NULL)
-      DeleteObject(hBm);
-    hDC = GetDC(hWnd);
-    hBm = CreateCompatibleBitmap(hDC, W, H);
-    ReleaseDC(hWnd, hDC);
-    SelectObject(hMemDC, hBm);
-
+    KH6_RndResize(LOWORD(lParam), HIWORD(lParam));
     SendMessage(hWnd, WM_TIMER, 30, 0);
     return 0;
 
   case WM_TIMER:
-    FrameCount++;
-    GLB_TimerResponse();
-    t = clock();
-    /*if (t - StartTime > CLOCKS_PER_SEC)
-    {
-      FPS = FrameCount / ((t - StartTime) / (DBL)CLOCKS_PER_SEC);
-      FrameCount = 0;
-      StartTime = t;
-    }*/
-    if (W > 0 && H > 0)
-    {
-      /* Clear frame */
-      SelectObject(hMemDC, GetStockObject(DC_BRUSH));
-      SelectObject(hMemDC, GetStockObject(DC_PEN));
-      SetDCBrushColor(hMemDC, RGB(255, 255, 255));
-      SetDCPenColor(hMemDC, RGB(255, 255, 255));
-      Rectangle(hMemDC, 0, 0, W, H);
-
-      /* Draw frame contents */
-      GLB_Draw(hMemDC);
-
-      TextOut(hMemDC, 0, 0, Buf, sprintf(Buf, "FPS: %.5f", FPS));
-
-      /* Copy frame to screen */
-      hDC = GetDC(hWnd);
-      BitBlt(hDC, 0, 0, W, H, hMemDC, 0, 0, SRCCOPY);
-      ReleaseDC(hWnd, hDC);
-    }
+    KH6_RndStart();
+    KH6_RndCamSet(VecSet(5, 5, 5), VecSet(0, 0, 0), VecSet(0, 1, 0));
+    m = KH6_RndMatrVP;
+ 
+    p1 = VecSet(0, 0, 0);
+    p2 = VecSet(1, 0, 0);
+ 
+    p = VecMulMatr(p1, m);
+    pnts[0].x = (INT)((p.X + 1) * KH6_RndFrameW / 2);
+    pnts[0].y = (INT)((-p.Y + 1) * KH6_RndFrameH / 2);
+ 
+    p = VecMulMatr(p2, m);
+    pnts[1].x = (INT)((p.X + 1) * KH6_RndFrameW / 2);
+    pnts[1].y = (INT)((-p.Y + 1) * KH6_RndFrameH / 2);
+ 
+    MoveToEx(KH6_hRndDCFrame, pnts[0].x, pnts[0].y, NULL);
+    LineTo(KH6_hRndDCFrame, pnts[1].x, pnts[1].y);
+    KH6_RndEnd();
+    hDC = GetDC(hWnd);
+    KH6_RndCopyFrame(hDC);
+    ReleaseDC(hWnd, hDC);
     return 0;
 
   case WM_KEYDOWN:
     if (wParam == VK_ESCAPE)
       SendMessage(hWnd, WM_CLOSE, 0, 0);
-    if (wParam == 'P')
-      GLB_IsPause = !GLB_IsPause;
-    return 0;
-
+   
   case WM_ERASEBKGND:
     return 1;
 
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
-    BitBlt(hDC, 0, 0, W, H, hMemDC, 0, 0, SRCCOPY);
     EndPaint(hWnd, &ps);
     return 0;
 
   case WM_DESTROY:
-    PostMessage(NULL, WM_QUIT, 0, 0);
     KillTimer(hWnd, 30);
-    if (hBm != NULL)
-      DeleteObject(hBm);
-    DeleteDC(hMemDC);
+    PostMessage(NULL, WM_QUIT, 0, 0);
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);

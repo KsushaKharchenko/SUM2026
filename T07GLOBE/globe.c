@@ -1,4 +1,9 @@
-/* Kharchenko Ksenia, 10-6, 06.06.2026 */
+/* FILE NAME: globe.c
+ * PURPOSE: 
+ * PROGRAMMER: KH6
+ * DATE: 06.06.2026
+ */
+
 
 #include <windows.h>
 #include <math.h>
@@ -6,6 +11,7 @@
 #include <stdlib.h>
 
 #include "globe.h"
+
 
 #define GLB_MIN(A, B) ((A) < (B) ? (A) : (B))
 #define GLB_MAX(A, B) ((A) > (B) ? (A) : (B))
@@ -29,7 +35,7 @@ COLORREF ColorTo255( VEC Color )
   return RGB(R, G, B);
 }
 
-VEC RotateZ( VEC P, DBL Angle )
+/*VEC RotateZ( VEC P, DBL Angle )
 {
   VEC NewP;
   DBL a = Angle * PI / 180, si = sin(a), co = cos(a);
@@ -60,7 +66,7 @@ VEC RotateY( VEC P, DBL Angle )
   NewP.Y = P.Y;
   NewP.Z = P.Z * co - P.X * si;
   return NewP;
-}
+}*/
 
 VOID GLB_Init( DBL r )
 {
