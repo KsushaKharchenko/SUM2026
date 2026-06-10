@@ -11,6 +11,7 @@
 #include <stdlib.h>
 
 #include "globe.h"
+#include "timer.h"
 
 
 #define GLB_MIN(A, B) ((A) < (B) ? (A) : (B))

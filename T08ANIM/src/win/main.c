@@ -4,6 +4,8 @@
  * DATE: 09.06.2026
  */
 
+#include <time.h>
+
 #include "def.h"
 #include "anim/rnd/rnd.h"
 
@@ -59,9 +61,9 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   HDC hDC;
   PAINTSTRUCT ps;
   MINMAXINFO *minmax;
-  VEC p1, p2, p;
-  MATR m;
-  POINT pnts[2];
+  DBL t = clock() / 1000.0;
+  
+  static kh6PRIM Pr, Pr1;
   
   switch (Msg)
   {
@@ -73,6 +75,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 
   case WM_CREATE:
     KH6_RndInit(hWnd);
+    KH6_RndPrimCreateSphere(&Pr, 1, 15, 10);
+    KH6_RndPrimLoad(&Pr1, "bin/models/cow.obj" );
     SetTimer(hWnd, 30, 1, NULL);
     return 0;
   
@@ -83,22 +87,13 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 
   case WM_TIMER:
     KH6_RndStart();
-    KH6_RndCamSet(VecSet(5, 5, 5), VecSet(0, 0, 0), VecSet(0, 1, 0));
-    m = KH6_RndMatrVP;
- 
-    p1 = VecSet(0, 0, 0);
-    p2 = VecSet(1, 0, 0);
- 
-    p = VecMulMatr(p1, m);
-    pnts[0].x = (INT)((p.X + 1) * KH6_RndFrameW / 2);
-    pnts[0].y = (INT)((-p.Y + 1) * KH6_RndFrameH / 2);
- 
-    p = VecMulMatr(p2, m);
-    pnts[1].x = (INT)((p.X + 1) * KH6_RndFrameW / 2);
-    pnts[1].y = (INT)((-p.Y + 1) * KH6_RndFrameH / 2);
- 
-    MoveToEx(KH6_hRndDCFrame, pnts[0].x, pnts[0].y, NULL);
-    LineTo(KH6_hRndDCFrame, pnts[1].x, pnts[1].y);
+    
+    KH6_RndCamSet(VecSet(20*3, 0, 10*3), VecSet(2, 5, 0), VecSet(0, 5, 0));
+
+    Pr.Trans = MatrMulMatr(MatrMulMatr(MatrRotateY(8 * t), 
+      MatrMulMatr(MatrRotateZ(fabs(sin(8*t))), MatrIdentity())), MatrTranslate(VecSet(0, 0, -3)));
+    KH6_RndPrimDraw(&Pr1, MatrMulMatr(Pr.Trans, MatrTranslate(VecSet(0, fabs(sin(0.8*t)), 0))));
+    
     KH6_RndEnd();
     hDC = GetDC(hWnd);
     KH6_RndCopyFrame(hDC);
@@ -107,19 +102,22 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 
   case WM_KEYDOWN:
     if (wParam == VK_ESCAPE)
-      SendMessage(hWnd, WM_CLOSE, 0, 0);
+      SendMessage(hWnd, WM_CLOSE, 30, 0);
    
   case WM_ERASEBKGND:
     return 1;
 
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
+    KH6_RndCopyFrame(KH6_hRndDCFrame);
     EndPaint(hWnd, &ps);
     return 0;
 
   case WM_DESTROY:
+    KH6_RndPrimFree(&Pr);
+    KH6_RndClose();
     KillTimer(hWnd, 30);
-    PostMessage(NULL, WM_QUIT, 0, 0);
+    PostMessage(NULL, WM_QUIT, 30, 0);
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);

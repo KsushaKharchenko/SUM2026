@@ -190,6 +190,14 @@
 				Name="Animation System"
 				>
 				<File
+					RelativePath=".\src\anim\anim.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\anim.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\anim\rnd\rnd.h"
 					>
 				</File>
@@ -201,12 +209,36 @@
 					RelativePath=".\src\anim\rnd\rnddata.c"
 					>
 				</File>
+				<File
+					RelativePath=".\src\anim\rnd\rndprim.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\timer.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\unit.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Windows Depanded"
 				>
 				<File
 					RelativePath=".\src\win\main.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Unit Samples"
+				>
+				<File
+					RelativePath=".\src\units\u_ball.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\units.h"
 					>
 				</File>
 			</Filter>

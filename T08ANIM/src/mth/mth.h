@@ -16,7 +16,13 @@
 /* Degrees to radians conversion */
 #define D2R(A) ((A) * (PI / 180.0))
 #define Degree2Radian(a) D2R(a)
- 
+
+#define VecAddVec3(A, B, C) VecAddVec(A, VecAddVec(B, C))
+#define VecAddVec4(A, B, C, Â) VecAddVec(VecAddVec(A, B), VecAddVec(C, D))
+
+#define MatrMulMatr3(A, B, C) MatrMulMatr(A, MatrMulMatr(B, C))
+#define MatrMulMatr4(A, B, C, Â) MatrMulMatr(MatrMulMatr(A, B), MatrMulMatr(C, D))
+
 #define UnitMatrix \
 {                  \
   {                \
@@ -208,7 +214,7 @@ _inline MATR MatrSet( DBL A00, DBL A01, DBL A02, DBL A03,
   return m;
 }
  
-_inline MATR MatrTranlate( VEC T )
+_inline MATR MatrTranslate( VEC T )
 {
   MATR m = UnitMatrix;
  
@@ -267,10 +273,10 @@ _inline MATR MatrRotate( VEC P, DBL AngleInDegree )
 {
   DBL c = cos(AngleInDegree), s = sin(AngleInDegree);
 
-  return MatrSet(c + P.X * P.X * (1 - c), P.Z * s + P.X * P.Y * (1 - c), - P.Y * s + P.X * P.Z * (1 - c), 0,
-                 - P.Z * s + P.X * P.Y * (1 - c), c + P.Y * P.Y * (1 - c), P.X * s + P.Y * P.Z * (1 - c), 0,
-                 P.Y * s + P.X * P.Z * (1 - c), - P.X * s + P.Y * P.Z * (1 - c), c + P.Z * P.Z * (1 - c), 0,
-                 0, 0, 0, 0);
+  return MatrSet(        c + P.X * P.X * (1 - c),   P.Z * s + P.X * P.Y * (1 - c), - P.Y * s + P.X * P.Z * (1 - c), 0,
+                 - P.Z * s + P.X * P.Y * (1 - c),         c + P.Y * P.Y * (1 - c),   P.X * s + P.Y * P.Z * (1 - c), 0,
+                   P.Y * s + P.X * P.Z * (1 - c), - P.X * s + P.Y * P.Z * (1 - c),         c + P.Z * P.Z * (1 - c), 0,
+                                               0,                               0,                               0, 0);
 }
 
 _inline MATR MatrMulMatr( MATR M1, MATR M2 )

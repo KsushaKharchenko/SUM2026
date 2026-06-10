@@ -25,7 +25,96 @@ VOID KH6_RndProjSet( VOID );
 VOID KH6_RndResize( INT W, INT H );
 VOID KH6_RndInit( HWND hWnd );
 VOID KH6_RndClose( VOID );
+VOID KH6_RndEnd( VOID );
 VOID KH6_RndCopyFrame( HDC hDC );
 VOID KH6_RndStart( VOID );
 VOID KH6_RndCamSet( VEC Loc, VEC At, VEC Up );
 
+
+/***
+ * Primitive handle
+ ***/
+ 
+/* Vertex representation type */
+typedef struct tagkh6VERTEX
+{
+  VEC P;  /* Vertex position */
+} kh6VERTEX;
+ 
+/* Primitive representation type */
+typedef struct tagkh6PRIM
+{
+  kh6VERTEX *V; /* Vertex attributes array */
+  INT NumOfV;   /* Number of vertices */
+ 
+  INT *I;       /* Index array (for trimesh – by 3 ones) */
+  INT NumOfI;   /* Number of indices */
+ 
+  MATR Trans;   /* Additional transformation matrix */
+} kh6PRIM;
+ 
+/* Primitive create function.
+ * ARGUMENTS:
+ *   - primitive to be create:
+ *       kh6PRIM *Pr;
+ *   - number of vertecis and indices:
+ *       INT NoofV, NoofI;
+ * RETURNS:
+ *   (BOOL) TRUE if success, FLASE otherwise.
+ */
+BOOL KH6_RndPrimCreate( kh6PRIM *Pr, INT NoofV, INT NoofI );
+ 
+/* Primitive free function.
+ * ARGUMENTS:
+ *   - primitive to be free:
+ *       kh6PRIM *Pr;
+ * RETURNS: None.
+ */
+VOID KH6_RndPrimFree( kh6PRIM *Pr );
+ 
+/* Primitive draw function.
+ * ARGUMENTS:
+ *   - primitive to be draw:
+ *       kh6PRIM *Pr;
+ *   - transformation matrix:
+ *       MATR World;
+ * RETURNS: None.
+ */
+VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World );
+ 
+/* Primitive free function.
+ * ARGUMENTS:
+ *   - primitive to be load:
+ *       kh6PRIM *Pr;
+ *   - primitve filename (.OBJ):
+ *       CHAR *FileName;
+ * RETURNS:
+ *   (BOOL) TRUE if success, FLASE otherwise.
+ */
+BOOL KH6_RndPrimLoad( kh6PRIM *Pr, CHAR *FileName );
+ 
+/* Create sphere primitive function.
+ * ARGUMENTS:
+ *   - pointer to primitive to create:
+ *       kh6PRIM *Pr;
+ *   - sphere radius:
+ *       DBL R;
+ *   - split parts counts:
+ *       INT W, H;
+ * RETURNS:
+ *   (BOOL) TRUE if success, FALSE otherwise.
+ */
+BOOL KH6_RndPrimCreateSphere( kh6PRIM *Pr, DBL R, INT W, INT H );
+
+/* Create cilinder primitive function.
+ * ARGUMENTS:
+ *   - pointer to primitive to create:
+ *       kh6PRIM *Pr;
+ *   - cilinder radius:
+ *       DBL R;
+ *   - split parts counts:
+ *       INT W, H;
+ * RETURNS:
+ *   (BOOL) TRUE if success, FALSE otherwise.
+ */
+BOOL KH6_RndPrimCilinder( kh6PRIM *Pr, DBL R, INT W, INT H );
