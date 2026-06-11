@@ -1,13 +1,11 @@
 /* FILE NAME: main.c
  * PURPOSE: main file of  project
  * PROGRAMMER: KH6
- * DATE: 09.06.2026
+ * DATE: 11.06.2026
  */
 
-#include <time.h>
+#include "units/units.h"
 
-#include "def.h"
-#include "anim/rnd/rnd.h"
 
 #define WND_CLASS_NAME "LaLaLa"
 
@@ -39,20 +37,23 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
     return 0;
   }
   /* create window */
-  hWnd = CreateWindow(WND_CLASS_NAME, "Globe", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 100, 100, 800, 800, NULL, NULL, hInstance, NULL);
+  hWnd = CreateWindow(WND_CLASS_NAME, "Animation", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 100, 100, 800, 800, NULL, NULL, hInstance, NULL);
+
+  /* add animation object */
+
+  KH6_AnimAddUnit(KH6_UnitCreateBall());
 
   /* main program loop */
   while (TRUE)
-  {
     if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
       if (msg.message == WM_QUIT)
         break;
       DispatchMessage(&msg);
     }
-    SendMessage(hWnd, WM_TIMER, 30, 0);
-  }
-  return 0;
+    else
+      SendMessage(hWnd, WM_TIMER, 30, 0);
+  return msg.wParam;
 }
  
 
@@ -61,9 +62,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   HDC hDC;
   PAINTSTRUCT ps;
   MINMAXINFO *minmax;
-  DBL t = clock() / 1000.0;
-  
-  static kh6PRIM Pr, Pr1;
   
   switch (Msg)
   {
@@ -74,50 +72,35 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     return 0;
 
   case WM_CREATE:
-    KH6_RndInit(hWnd);
-    KH6_RndPrimCreateSphere(&Pr, 1, 15, 10);
-    KH6_RndPrimLoad(&Pr1, "bin/models/cow.obj" );
     SetTimer(hWnd, 30, 1, NULL);
+    KH6_AnimInit(hWnd);
     return 0;
   
   case WM_SIZE:
-    KH6_RndResize(LOWORD(lParam), HIWORD(lParam));
+    KH6_AnimResize(LOWORD(lParam), HIWORD(lParam));
     SendMessage(hWnd, WM_TIMER, 30, 0);
     return 0;
 
   case WM_TIMER:
-    KH6_RndStart();
-    
-    KH6_RndCamSet(VecSet(20*3, 0, 10*3), VecSet(2, 5, 0), VecSet(0, 5, 0));
-
-    Pr.Trans = MatrMulMatr(MatrMulMatr(MatrRotateY(8 * t), 
-      MatrMulMatr(MatrRotateZ(fabs(sin(8*t))), MatrIdentity())), MatrTranslate(VecSet(0, 0, -3)));
-    KH6_RndPrimDraw(&Pr1, MatrMulMatr(Pr.Trans, MatrTranslate(VecSet(0, fabs(sin(0.8*t)), 0))));
-    
-    KH6_RndEnd();
+    KH6_AnimRender();
     hDC = GetDC(hWnd);
-    KH6_RndCopyFrame(hDC);
+    KH6_AnimCopyFrame(hDC);
     ReleaseDC(hWnd, hDC);
     return 0;
-
-  case WM_KEYDOWN:
-    if (wParam == VK_ESCAPE)
-      SendMessage(hWnd, WM_CLOSE, 30, 0);
    
   case WM_ERASEBKGND:
     return 1;
 
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
-    KH6_RndCopyFrame(KH6_hRndDCFrame);
+    KH6_AnimCopyFrame(KH6_hRndDCFrame);
     EndPaint(hWnd, &ps);
     return 0;
 
   case WM_DESTROY:
-    KH6_RndPrimFree(&Pr);
-    KH6_RndClose();
-    KillTimer(hWnd, 30);
+    KH6_AnimClose();
     PostMessage(NULL, WM_QUIT, 30, 0);
+    KillTimer(hWnd, 30);
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);

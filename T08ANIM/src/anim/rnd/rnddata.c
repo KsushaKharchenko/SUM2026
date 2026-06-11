@@ -4,6 +4,7 @@
  * DATE: 09.06.2026
  */
 #include "anim/rnd/rnd.h"
+
 HWND KH6_hRndWnd;
 HDC KH6_hRndDCFrame;
 HBITMAP KH6_hRndBmFrame;

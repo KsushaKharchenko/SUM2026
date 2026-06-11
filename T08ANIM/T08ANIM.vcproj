@@ -178,6 +178,10 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\src\def.h"
+				>
+			</File>
 			<Filter
 				Name="Math Support"
 				>
@@ -198,22 +202,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\anim\rnd\rnd.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\anim\rnd\rndbase.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\anim\rnd\rnddata.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\anim\rnd\rndprim.c"
-					>
-				</File>
-				<File
 					RelativePath=".\src\anim\timer.c"
 					>
 				</File>
@@ -221,6 +209,26 @@
 					RelativePath=".\src\anim\unit.c"
 					>
 				</File>
+				<Filter
+					Name="Render System"
+					>
+					<File
+						RelativePath=".\src\anim\rnd\rnd.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rndbase.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rnddata.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rndprim.c"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Windows Depanded"
@@ -248,10 +256,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath=".\src\def.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

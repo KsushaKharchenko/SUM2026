@@ -1,7 +1,6 @@
+#include <string.h>
 
 #include "anim/rnd/rnd.h"
-#include <string.h>
-#include "def.h"
 
 VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
 {
