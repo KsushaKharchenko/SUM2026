@@ -1,0 +1,5 @@
+/* FILE NAME: timer.h
+ * PURPOSE: 
+ * PROGRAMMER: KH6
+ * DATE: 11.06.2026
+ */
