@@ -1,7 +1,7 @@
 /* FILE NAME: mth.h
  * PURPOSE: 3D math implementation module.
  * PROGRAMMER: KH6
- * DATE: 09.06.2026
+ * DATE: 11.06.2026
  */
 #ifndef __mth_h_
 #define __mth_h_
@@ -41,23 +41,39 @@ typedef float FLT;
 /* Space vector/point representation type */
 typedef struct
 {
-  DBL X, Y, Z;
+  FLT X, Y, Z;
 }VEC;
- 
+
+typedef struct
+{
+  FLT X, Y;
+}VEC2;
+
+typedef struct
+{
+  FLT X, Y, Z, W;
+}VEC4;
 /* Transformation matrix representation type */
 typedef struct tagMATR
 {
-  DBL A[4][4]; /* Matrix elements */
+  FLT A[4][4]; /* Matrix elements */
 } MATR;
 
-_inline VEC VecSet( DBL X, DBL Y, DBL Z )
+_inline VEC VecSet( FLT X, FLT Y, FLT Z )
 {
   VEC r = {X, Y, Z};
  
   return r;
 }
 
-_inline VEC VecSet1( DBL A )
+_inline VEC4 VecSet4( FLT X, FLT Y, FLT Z, FLT W )
+{
+  VEC4 r = {X, Y, Z, W};
+ 
+  return r;
+}
+
+_inline VEC VecSet1( FLT A )
 {
   VEC r = {A, A, A};
  
@@ -93,11 +109,11 @@ _inline VEC VecSubVec( VEC V1, VEC V2 )
  *   - vector to be add:
  *       VEC V1;
  *   - number to be add:
- *       DBL N;
+ *       FLT N;
  * RETURNS:
  *   (VEC) result vector.
  */
-_inline VEC VecMulNum( VEC V1, DBL N )
+_inline VEC VecMulNum( VEC V1, FLT N )
 {
   return VecSet(V1.X * N, V1.Y * N, V1.Z * N);
 }
@@ -107,11 +123,11 @@ _inline VEC VecMulNum( VEC V1, DBL N )
  *   - vector to be add:
  *       VEC V1;
  *   - number to be add:
- *       DBL N;
+ *       FLT N;
  * RETURNS:
  *   (VEC) result vector.
  */
-_inline VEC VecDivNum( VEC V1, DBL N )
+_inline VEC VecDivNum( VEC V1, FLT N )
 {
   return VecSet(V1.X / N, V1.Y / N, V1.Z / N);
 }
@@ -129,7 +145,7 @@ _inline VEC VecNeg( VEC V )
 }
 
 /* скалярное произведение векторов */
-_inline DBL VecDotVec( VEC V1, VEC V2 )
+_inline FLT VecDotVec( VEC V1, VEC V2 )
 {
   return (V1.X * V2.X + V1.Y * V2.Y + V1.Z * V2.Z);
 }
@@ -140,23 +156,23 @@ _inline VEC VecCrossVec( VEC V1, VEC V2 )
   return VecSet(V1.Y * V2.Z - V1.Z * V2.Y, V1.Z * V2.X - V1.X * V2.Z, V1.X * V2.Y - V1.Y * V2.X);
 }
  
-_inline DBL VecLen( VEC V )
+_inline FLT VecLen( VEC V )
 {
-  DBL len = VecDotVec(V, V);
+  FLT len = VecDotVec(V, V);
  
   if (len == 1 || len == 0)
     return len;
   return sqrt(len);
 }
 
-_inline DBL VecLen2( VEC V )
+_inline FLT VecLen2( VEC V )
 {
   return VecLen(V) * VecLen(V);
 }
 
 _inline VEC VecNormalize( VEC V )
 {
-  DBL len = VecDotVec(V, V);
+  FLT len = VecDotVec(V, V);
  
   if (len == 1 || len == 0)
     return V;
@@ -181,7 +197,7 @@ _inline VEC VectorTransform( VEC V, MATR M )
  
 _inline VEC VecMulMatr( VEC V, MATR M )
 {
-  DBL w = V.X * M.A[0][3] + V.Y * M.A[1][3] + V.Z * M.A[2][3] + M.A[3][3];
+  FLT w = V.X * M.A[0][3] + V.Y * M.A[1][3] + V.Z * M.A[2][3] + M.A[3][3];
 
   return
     VecSet((V.X * M.A[0][0] + V.Y * M.A[1][0] + V.Z * M.A[2][0] + M.A[3][0]) / w,
@@ -196,10 +212,10 @@ _inline MATR MatrIdentity( VOID )
   return I;
 }
  
-_inline MATR MatrSet( DBL A00, DBL A01, DBL A02, DBL A03,
-              DBL A10, DBL A11, DBL A12, DBL A13,
-              DBL A20, DBL A21, DBL A22, DBL A23,
-              DBL A30, DBL A31, DBL A32, DBL A33 )
+_inline MATR MatrSet( FLT A00, FLT A01, FLT A02, FLT A03,
+              FLT A10, FLT A11, FLT A12, FLT A13,
+              FLT A20, FLT A21, FLT A22, FLT A23,
+              FLT A30, FLT A31, FLT A32, FLT A33 )
 {
   MATR m =
   {
@@ -233,10 +249,10 @@ _inline MATR MatrScale( VEC S )
   m.A[2][2] = S.Z;
   return m;
 }
-_inline MATR MatrRotateX( DBL AngleInDegree )
+_inline MATR MatrRotateX( FLT AngleInDegree )
 {
   MATR m = UnitMatrix;
-  DBL a = D2R(AngleInDegree), s = sin(a), c = cos(a);
+  FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
 
   m.A[1][1] = c;
   m.A[1][2] = s;
@@ -245,10 +261,10 @@ _inline MATR MatrRotateX( DBL AngleInDegree )
   return m;
 }
 
-_inline MATR MatrRotateY( DBL AngleInDegree )
+_inline MATR MatrRotateY( FLT AngleInDegree )
 {
   MATR m = UnitMatrix;
-  DBL a = D2R(AngleInDegree), s = sin(a), c = cos(a);
+  FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
 
   m.A[0][0] = c;
   m.A[0][2] = -s;
@@ -257,10 +273,10 @@ _inline MATR MatrRotateY( DBL AngleInDegree )
   return m;
 }
 
-_inline MATR MatrRotateZ( DBL AngleInDegree )
+_inline MATR MatrRotateZ( FLT AngleInDegree )
 {
   MATR m = UnitMatrix;
-  DBL a = D2R(AngleInDegree), s = sin(a), c = cos(a);
+  FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
 
   m.A[0][0] = c;
   m.A[0][1] = s;
@@ -269,9 +285,9 @@ _inline MATR MatrRotateZ( DBL AngleInDegree )
   return m;
 }
 
-_inline MATR MatrRotate( VEC P, DBL AngleInDegree )
+_inline MATR MatrRotate( VEC P, FLT AngleInDegree )
 {
-  DBL c = cos(AngleInDegree), s = sin(AngleInDegree);
+  FLT c = cos(AngleInDegree), s = sin(AngleInDegree);
 
   return MatrSet(        c + P.X * P.X * (1 - c),   P.Z * s + P.X * P.Y * (1 - c), - P.Y * s + P.X * P.Z * (1 - c), 0,
                  - P.Z * s + P.X * P.Y * (1 - c),         c + P.Y * P.Y * (1 - c),   P.X * s + P.Y * P.Z * (1 - c), 0,
@@ -301,15 +317,15 @@ _inline MATR MatrTranspose( MATR M )
       MT.A[i][j] = M.A[j][i];
   return MT;
 }
-_inline DBL MatrDeterm3x3( DBL A11, DBL A12, DBL A13,
-                           DBL A21, DBL A22, DBL A23,
-                           DBL A31, DBL A32, DBL A33 )
+_inline FLT MatrDeterm3x3( FLT A11, FLT A12, FLT A13,
+                           FLT A21, FLT A22, FLT A23,
+                           FLT A31, FLT A32, FLT A33 )
  {
   return A11 * A22 * A33 + A12 * A23 * A31 + A13 * A21 * A32 -
          A11 * A23 * A32 - A12 * A21 * A33 - A13 * A22 * A31;
 }
 
-_inline DBL MatrDeterm( MATR M )
+_inline FLT MatrDeterm( MATR M )
 {
   return
     M.A[0][0] * MatrDeterm3x3(M.A[1][1], M.A[1][2], M.A[1][3],
@@ -328,7 +344,7 @@ _inline DBL MatrDeterm( MATR M )
 
 _inline MATR MatrInverse( MATR M )
 {
-  DBL det = MatrDeterm(M);
+  FLT det = MatrDeterm(M);
   MATR r;
   INT i, j, sign[2] = {1, -1}, P[4][3] = {{1, 2, 3}, {0, 2, 3}, {0, 1, 3}, {0, 1, 2}};
  
@@ -347,11 +363,11 @@ _inline MATR MatrInverse( MATR M )
 /* Perspective (frustum) projection matrix setup function.
  * ARGUMENTS:
  *   - frustum side facets coordinates:
- *       DBL Left, Right, Bottom, Top, Near, Far;
+ *       FLT Left, Right, Bottom, Top, Near, Far;
  * RETURNS:
  *   (MATR) result matrix.
  */
-__inline MATR MatrFrustum( DBL Left, DBL Right, DBL Bottom, DBL Top, DBL Near, DBL Far )
+__inline MATR MatrFrustum( FLT Left, FLT Right, FLT Bottom, FLT Top, FLT Near, FLT Far )
 {
   MATR m =
   {
@@ -413,19 +429,19 @@ _inline VOID PrintVector( CHAR *Text, VEC V )
 /* Random number obtain in range [0.0 .. 1.0] function.
  * ARGUMENTS: None.
  * RETURNS:
- *   (DBL) result random number.
+ *   (FLT) result random number.
  */
-__inline DBL Rnd0( VOID )
+__inline FLT Rnd0( VOID )
 {
-  return (DBL)rand() / RAND_MAX;
+  return (FLT)rand() / RAND_MAX;
 } /* End of 'Rnd0' function */
  
 /* Random number obtain in range [-1.0 .. 1.0] function.
  * ARGUMENTS: None.
  * RETURNS:
- *   (DBL) result random number.
+ *   (FLT) result random number.
  */
-__inline DBL Rnd1( VOID )
+__inline FLT Rnd1( VOID )
 {
   return 2.0 * rand() / RAND_MAX - 1;
 } /* End of 'Rnd1' function */

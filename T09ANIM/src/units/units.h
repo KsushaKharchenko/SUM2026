@@ -4,7 +4,11 @@
  * DATE: 11.06.2026
  */
 
- #include "anim/anim.h"
+
+#ifndef __units_h_
+#define __units_h_
+
+#include "anim/anim.h"
 
 /* Unit ball creation function.
  * ARGUMENTS: None.
@@ -13,3 +17,4 @@
  */
 kh6UNIT * KH6_UnitCreateBall( VOID );
 
+#endif /* __units_h_ */

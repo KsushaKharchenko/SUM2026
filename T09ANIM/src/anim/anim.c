@@ -15,10 +15,9 @@ VOID KH6_AnimInit( HWND hWnd )
 
   kh6_Anim.hWnd = hWnd;
   KH6_RndInit(hWnd);
-  kh6_Anim.hDC = KH6_hRndDCFrame;
   kh6_Anim.W = KH6_RndFrameW;
   kh6_Anim.H = KH6_RndFrameH;
-  //KH6_TimerInit();
+  KH6_TimerInit();
 }
 
 VOID KH6_AnimClose( VOID )
@@ -42,16 +41,19 @@ VOID KH6_AnimResize( INT W, INT H )
   KH6_AnimRender();
 }
 
-VOID KH6_AnimCopyFrame( HDC hDC )
+VOID KH6_AnimCopyFrame( VOID )
 {
-  KH6_RndCopyFrame(hDC);
+  KH6_RndCopyFrame();
 }
 
 VOID KH6_AnimRender( VOID )
 {
   INT i;
 
-  //KH6_TimerResponse();
+  if (kh6_Anim.IsActive)
+    KH6_AnimInputResponse();
+
+  KH6_TimerResponse();
 
   for (i = 0; i < kh6_Anim.NumOfUnits; i++)
     kh6_Anim.Units[i]->Response(kh6_Anim.Units[i], &kh6_Anim);
@@ -63,6 +65,7 @@ VOID KH6_AnimRender( VOID )
 
   KH6_RndEnd();
 }
+
 VOID KH6_AnimAddUnit( kh6UNIT *Uni )
 {
   if (kh6_Anim.NumOfUnits < kh6_MAX_UNITS)

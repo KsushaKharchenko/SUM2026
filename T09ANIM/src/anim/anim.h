@@ -4,6 +4,10 @@
  * DATE: 11.06.2026
  */
 
+
+#ifndef __anim_h_
+#define __anim_h_
+
 #include "rnd/rnd.h"
 
 #define kh6_MAX_UNITS 3000
@@ -31,6 +35,33 @@ struct tagkh6ANIM
  
   kh6UNIT * Units[kh6_MAX_UNITS];
   INT NumOfUnits;
+    
+  DBL
+    GlobalTime, GlobalDeltaTime, /* Global time and interframe interval */
+    Time, DeltaTime,             /* Time with pause and interframe interval */
+    FPS;                         /* Frames per second value */
+  BOOL
+    IsPause;                     /* Pause flag */
+
+  BOOL
+    IsActive;
+
+  BYTE 
+    Keys[256],      
+    KeysClick[256], 
+    KeysOld[256];
+
+  INT
+    Mx, My, Mz,
+    Mdx, Mdy, Mdz;
+
+  DBL
+    JX, JY, JZ, JR;
+
+  BYTE
+    JBut[32], JButClick[32];
+
+  INT JPov;
 };
 
 extern kh6ANIM kh6_Anim;
@@ -38,14 +69,26 @@ extern kh6ANIM kh6_Anim;
 VOID KH6_AnimInit( HWND hWnd );
 VOID KH6_AnimClose( VOID );
 VOID KH6_AnimResize( INT W, INT H );
-VOID KH6_AnimCopyFrame( HDC hDC );
+VOID KH6_AnimCopyFrame( VOID );
 VOID KH6_AnimRender( VOID );
 VOID KH6_AnimAddUnit( kh6UNIT *Uni );
 VOID KH6_AnimFlipFullScreen( VOID );
 VOID KH6_AnimExit( VOID );
 
 kh6UNIT * KH6_AnimUnitCreate( INT Size );
-//kh6UNIT * KH6_AnimUnitCreateBall( VOID );
+VOID KH6_TimerInit( VOID );
+VOID KH6_TimerResponse( VOID );
 
+VOID KH6_AnimKeyboardInit( VOID );
+VOID KH6_AnimKeyboardResponse( VOID );
 
-  
+VOID KH6_AnimMouseInit( HWND hWnd );
+VOID KH6_AnimMouseResponse( VOID );
+
+VOID KH6_AnimJoystickInit( VOID );
+VOID KH6_AnimJoystickResponse( VOID );
+
+VOID KH6_AnimInputInit( HWND hWnd );
+VOID KH6_AnimInputResponse( VOID );
+
+#endif /* __anim_h_ */

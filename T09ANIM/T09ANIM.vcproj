@@ -213,6 +213,10 @@
 					Name="Render System"
 					>
 					<File
+						RelativePath=".\src\anim\input.c"
+						>
+					</File>
+					<File
 						RelativePath=".\src\anim\rnd\rnd.h"
 						>
 					</File>
@@ -228,6 +232,14 @@
 						RelativePath=".\src\anim\rnd\rndprim.c"
 						>
 					</File>
+					<Filter
+						Name="OpenGL"
+						>
+						<File
+							RelativePath=".\src\anim\rnd\opengl\glew.c"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter

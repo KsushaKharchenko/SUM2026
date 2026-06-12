@@ -31,6 +31,13 @@ struct tagkh6ANIM
  
   kh6UNIT * Units[kh6_MAX_UNITS];
   INT NumOfUnits;
+
+   DBL
+    GlobalTime, GlobalDeltaTime, /* Global time and interframe interval */
+    Time, DeltaTime,             /* Time with pause and interframe interval */
+    FPS;                         /* Frames per second value */
+  BOOL
+    IsPause;                     /* Pause flag */
 };
 
 extern kh6ANIM kh6_Anim;

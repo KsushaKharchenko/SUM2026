@@ -1,12 +1,14 @@
 /* FILE NAME: def.h
  * PURPOSE: 
  * PROGRAMMER: KH6
- * DATE: 09.06.2026
+ * DATE: 11.06.2026
  */
 
 #ifndef __def_h_
 #define __def_h_
 
+#pragma warning(disable: 4244)
+#pragma warning(disable: 4305)
 
 /* Debug memory allocation support */
 #ifndef NDEBUG
