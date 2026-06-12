@@ -1,16 +1,16 @@
-/* Kharchenko Ksenia, 10-6, 06.06.2026 */
+/* FILE NAME: globe.h
+ * PURPOSE: 
+ * PROGRAMMER: KH6
+ * DATE: 06.06.2026
+ */
+
 #ifndef __globe_h_
 #define __globe_h_
 
-#define GRID_W 18
-#define GRID_H 12
-typedef DOUBLE DBL;
-static DBL PI = 3.1415926535;
+#include "mth.h"
 
-typedef struct
-{
-  DBL X, Y, Z;
-}VEC;
+#define GRID_W (18 * 8)
+#define GRID_H (12 * 8)
 
 VOID GLB_Init( DOUBLE r);
 
