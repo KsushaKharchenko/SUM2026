@@ -6,31 +6,18 @@ VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
 {
   INT i;
   MATR wvp = MatrMulMatr3(Pr->Trans, World, KH6_RndMatrVP);
-  POINT *pnts;
+  
+  glLoadMatrixf(wvp.A[0]);
  
-  if ((pnts = malloc(sizeof(POINT) * Pr->NumOfV)) == NULL)
-    return;
- 
-  /* Build vertex projects */
-  for (i = 0; i < Pr->NumOfV; i++)
-  {
-    VEC P = VecMulMatr(Pr->V[i].P, wvp);
- 
- 
-    pnts[i].x = (INT)((P.X + 1) * KH6_RndFrameW / 2);
-    pnts[i].y = (INT)((-P.Y + 1) * KH6_RndFrameH / 2);
-  }
- 
-  for (i = 0; i < Pr ->NumOfI; i += 3)
-  {
-    POINT p[3];
+  /* Draw triangles by edges */
+  glBegin(GL_TRIANGLES);
 
-    p[0] = pnts[Pr->I[i]];
-    p[1] = pnts[Pr->I[i + 1]];
-    p[2] = pnts[Pr->I[i + 2]];
-    Polygon(KH6_hRndDCFrame, p, 3);
+  for (i = 0; i < Pr ->NumOfI; i++)
+  {
+    glColor4fv(&Pr->V[Pr->I[i]].C.X);
+    glVertex3fv(&Pr->V[Pr->I[i]].P.X);
   }
-  free(pnts);
+  glEnd();
 }
 
 VOID KH6_RndPrimFree( kh6PRIM *Pr )

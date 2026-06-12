@@ -1,15 +1,24 @@
 /* FILE NAME: rnd.h
  * PURPOSE:
  * PROGRAMMER: KH6
- * DATE: 09.06.2026
+ * DATE: 11.06.2026
  */
+
+#ifndef __rnd_h_
+#define __rnd_h_
+
+#define GLEW_STATIC
+//#include <glew.h>
+//#include <wglew.h>
+//#include <gl/wglext.h>
 
 #include "def.h"
 
 extern HWND KH6_hRndWnd;
-extern HDC KH6_hRndDCFrame;
-extern HBITMAP KH6_hRndBmFrame;
+extern HDC KH6_hRndDC;
+extern HGLRC KH6_hRndGLRC;
 extern INT KH6_RndFrameW, KH6_RndFrameH;
+
 
 extern DBL
   KH6_RndProjSize,     /* Project plane fit square */
@@ -21,12 +30,13 @@ extern MATR
   KH6_RndMatrProj, /* Projection coordinate system matrix */
   KH6_RndMatrVP;   /* Stored (View * Proj) matrix */
 
+
 VOID KH6_RndProjSet( VOID );
 VOID KH6_RndResize( INT W, INT H );
 VOID KH6_RndInit( HWND hWnd );
 VOID KH6_RndClose( VOID );
 VOID KH6_RndEnd( VOID );
-VOID KH6_RndCopyFrame( HDC hDC );
+VOID KH6_RndCopyFrame( VOID );
 VOID KH6_RndStart( VOID );
 VOID KH6_RndCamSet( VEC Loc, VEC At, VEC Up );
 
@@ -39,6 +49,8 @@ VOID KH6_RndCamSet( VEC Loc, VEC At, VEC Up );
 typedef struct tagkh6VERTEX
 {
   VEC P;  /* Vertex position */
+  VEC2 T;
+  VEC4 C;
 } kh6VERTEX;
  
 /* Primitive representation type */
@@ -118,3 +130,5 @@ BOOL KH6_RndPrimCreateSphere( kh6PRIM *Pr, DBL R, INT W, INT H );
  *   (BOOL) TRUE if success, FALSE otherwise.
  */
 BOOL KH6_RndPrimCilinder( kh6PRIM *Pr, DBL R, INT W, INT H );
+
+#endif /* __rnd_h_ */

@@ -12,6 +12,10 @@
 
 #include "globe.h"
 #include "timer.h"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 28670aa1d489638a381d15375787722135303b8b
 
 #define GLB_MIN(A, B) ((A) < (B) ? (A) : (B))
 #define GLB_MAX(A, B) ((A) > (B) ? (A) : (B))
