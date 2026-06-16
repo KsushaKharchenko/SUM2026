@@ -1,8 +1,3 @@
-/* FILE NAME  : u_ctrl.c
- * PROGRAMMER : KH6
- * LAST UPDATE: 12.06.2026
- */
-
 #include <stdio.h>
 
 #include "units.h"
@@ -77,7 +72,7 @@ static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
  *       kh6ANIM *Ani;
  * RETURNS: None.
  */
-static VOID KH6_UnitRender( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
+kh6UNIT * KH6_UnitRender( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
 {
   CHAR Buf[102];
 

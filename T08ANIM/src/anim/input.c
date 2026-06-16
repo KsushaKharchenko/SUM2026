@@ -1,7 +1,4 @@
-/* FILE NAME: input.c
- * PROGRAMMER: KH6
- * DATE: 11.06.2026
- */
+
 #include <string.h>
 
 #include "anim.h"

@@ -213,6 +213,10 @@
 					Name="Render System"
 					>
 					<File
+						RelativePath=".\src\anim\input.c"
+						>
+					</File>
+					<File
 						RelativePath=".\src\anim\rnd\rnd.h"
 						>
 					</File>
@@ -243,6 +247,10 @@
 				>
 				<File
 					RelativePath=".\src\units\u_ball.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\u_ctrl.c"
 					>
 				</File>
 				<File

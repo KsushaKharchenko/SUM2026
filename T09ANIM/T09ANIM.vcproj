@@ -258,6 +258,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\units\u_cow.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\units\u_ctrl.c"
 					>
 				</File>

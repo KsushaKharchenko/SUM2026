@@ -1,5 +1,4 @@
 /* FILE NAME: anim.c
- * PURPOSE: 
  * PROGRAMMER: KH6
  * DATE: 11.06.2026
  */
@@ -18,7 +17,7 @@ VOID KH6_AnimInit( HWND hWnd )
   KH6_Anim.W = KH6_RndFrameW;
   KH6_Anim.H = KH6_RndFrameH;
   KH6_TimerInit();
-  KH6_AnimInputInit(hWnd);
+  KH6_AnimInputInit();
 }
 
 VOID KH6_AnimClose( VOID )
@@ -51,10 +50,9 @@ VOID KH6_AnimRender( VOID )
 {
   INT i;
 
+  KH6_TimerResponse();
   if (KH6_Anim.IsActive)
     KH6_AnimInputResponse();
-
-  KH6_TimerResponse();
 
   for (i = 0; i < KH6_Anim.NumOfUnits; i++)
     KH6_Anim.Units[i]->Response(KH6_Anim.Units[i], &KH6_Anim);
@@ -66,7 +64,6 @@ VOID KH6_AnimRender( VOID )
 
   KH6_RndEnd();
 }
-
 VOID KH6_AnimAddUnit( kh6UNIT *Uni )
 {
   if (KH6_Anim.NumOfUnits < kh6_MAX_UNITS)
@@ -79,4 +76,5 @@ VOID KH6_AnimFlipFullScreen( VOID )
 
 VOID KH6_AnimExit( VOID )
 {
+  PostMessage(KH6_Anim.hWnd, WM_CLOSE, 0, 0);
 }

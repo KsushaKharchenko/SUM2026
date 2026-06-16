@@ -17,6 +17,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
   WNDCLASS wc;
   MSG msg;
   HWND hWnd;
+  INT i;
  
   /* window class register */
  
@@ -41,7 +42,9 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
 
   /* add animation object */
 
-  KH6_AnimAddUnit(KH6_UnitCreateBall());
+  for (i = 0; i < 30; i++)
+    KH6_AnimAddUnit(KH6_UnitCreateBall());
+  KH6_AnimAddUnit(KH6_UnitCreateControl());
 
   /* main program loop */
   while (TRUE)
@@ -95,6 +98,16 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     hDC = BeginPaint(hWnd, &ps);
     KH6_AnimCopyFrame(KH6_hRndDCFrame);
     EndPaint(hWnd, &ps);
+    return 0;
+      
+  case WM_ACTIVATE:
+    KH6_Anim.IsActive = LOWORD(wParam) != WA_INACTIVE;
+    return 0;
+  case WM_ENTERSIZEMOVE:
+    KH6_Anim.IsActive = FALSE;
+    return 0;
+  case WM_EXITSIZEMOVE:
+    KH6_Anim.IsActive = TRUE;
     return 0;
 
   case WM_DESTROY:

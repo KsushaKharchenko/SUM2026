@@ -1,5 +1,4 @@
 /* FILE NAME: anim.h
- * PURPOSE: 
  * PROGRAMMER: KH6
  * DATE: 11.06.2026
  */
@@ -75,19 +74,10 @@ VOID KH6_AnimFlipFullScreen( VOID );
 VOID KH6_AnimExit( VOID );
 
 kh6UNIT * KH6_AnimUnitCreate( INT Size );
+
 VOID KH6_TimerInit( VOID );
 VOID KH6_TimerResponse( VOID );
 
-VOID KH6_AnimKeyboardInit( VOID );
-VOID KH6_AnimKeyboardResponse( VOID );
-
-VOID KH6_AnimMouseInit( HWND hWnd );
-VOID KH6_AnimMouseResponse( VOID );
-
-VOID KH6_AnimJoystickInit( VOID );
-VOID KH6_AnimJoystickResponse( VOID );
-
-VOID KH6_AnimInputInit( HWND hWnd );
+VOID KH6_AnimInputInit( VOID );
 VOID KH6_AnimInputResponse( VOID );
-
 #endif /* __anim_h_ */

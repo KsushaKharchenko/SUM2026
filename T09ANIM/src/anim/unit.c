@@ -1,5 +1,4 @@
 /* FILE NAME: unit.c
- * PURPOSE: 
  * PROGRAMMER: KH6
  * DATE: 11.06.2026
  */

@@ -1,5 +1,4 @@
-/* FILE NAME: main.c
- * PURPOSE:
+/* FILE NAME: rnddata.c
  * PROGRAMMER: KH6
  * DATE: 11.06.2026
  */

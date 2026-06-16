@@ -1,5 +1,4 @@
-/* FILE NAME: timer.h
- * PURPOSE: 
+/* FILE NAME: timer.c
  * PROGRAMMER: KH6
  * DATE: 11.06.2026
  */
@@ -42,13 +41,13 @@ VOID KH6_TimerResponse( VOID )
   /* Time with pause */
   if (KH6_Anim.IsPause)
   {
-    PauseTime += t.QuadPart - OldTime;
     KH6_Anim.DeltaTime = 0;
+    PauseTime += t.QuadPart - OldTime;
   }
   else
   {
+    KH6_Anim.Time = (DOUBLE)(t.QuadPart - PauseTime - StartTime) / TimePerSec;
     KH6_Anim.DeltaTime = KH6_Anim.GlobalDeltaTime;
-    KH6_Anim.Time = (DBL)(t.QuadPart - PauseTime - StartTime) / TimePerSec;
   }
  
   /* FPS */
