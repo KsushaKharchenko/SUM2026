@@ -12,7 +12,10 @@
 
 #include "globe.h"
 #include "timer.h"
+<<<<<<< HEAD
+=======
 
+>>>>>>> 28670aa1d489638a381d15375787722135303b8b
 
 #define GlobalMIN(A, B) ((A) < (B) ? (A) : (B))
 #define GlobalMAX(A, B) ((A) > (B) ? (A) : (B))
@@ -115,7 +118,7 @@ VOID GlobalDraw( HDC hDC)
 { 
    INT i, j, s = 2;
    DBL 
-     t = (DOUBLE)clock() / CLOCKS_PER_SEC,
+     t = GLB_Time,
      Xp, Yp, nl;
    VEC P, N, L, L1, C = {0.3, 0.8, 0.5};
    POINT pts[4];
@@ -209,4 +212,3 @@ VOID GlobalDraw( HDC hDC)
            Polygon(hDC, pts, 4);
        }
 }
-

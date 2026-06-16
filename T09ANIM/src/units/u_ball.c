@@ -1,7 +1,6 @@
-/* FILE NAME: u_ball.c
- * PURPOSE: 
- * PROGRAMMER: KH6
- * DATE: 11.06.2026
+/* FILE NAME  : u_ball.c
+ * PROGRAMMER : KH6
+ * LAST UPDATE: 12.06.2026
  */
 
 #include "units.h"
@@ -10,11 +9,16 @@ typedef struct tagkh6UNIT_BALL
 {
   KH6_UNIT_BASE_FIELDS;
   kh6PRIM Ball;               /*ball primitive*/
+  VEC Pos;
+  DBL Scale, Shift;              
 }kh6UNIT_BALL;
 
 static VOID KH6_UnitInit( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimCreateSphere(&Uni->Ball, 1, 18, 8);
+  KH6_RndPrimCreateSphere(&Uni->Ball, 0.2, 18, 8);
+  Uni->Pos = VecSet(Rnd1()* 3, 1, Rnd1()* 3); 
+  Uni->Scale = Rnd1() * 0.5 + 3;
+  Uni->Shift = Rnd1() * 33 + 1;
 } /* End of 'KH6_UnitInit' function */
  
 /* Unit deinitialization function.
@@ -52,7 +56,8 @@ static VOID KH6_UnitResponse( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
  */
 static VOID KH6_UnitRender( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimDraw(&Uni->Ball, MatrTranslate(VecSet(0, 0, 0)));
+  KH6_RndPrimDraw(&Uni->Ball, MatrTranslate(VecAddVec(Uni->Pos, 
+                  VecSet(0, fabs(sin(Ani->Time + Uni->Shift * Uni->Scale)), 0))));
 } /* End of 'KH6_UnitRender' function */
 
  

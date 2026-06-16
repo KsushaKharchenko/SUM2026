@@ -1,5 +1,4 @@
 /* FILE NAME: anim.h
- * PURPOSE: 
  * PROGRAMMER: KH6
  * DATE: 11.06.2026
  */
@@ -48,8 +47,7 @@ struct tagkh6ANIM
 
   BYTE 
     Keys[256],      
-    KeysClick[256], 
-    KeysOld[256];
+    KeysClick[256];
 
   INT
     Mx, My, Mz,
@@ -64,7 +62,7 @@ struct tagkh6ANIM
   INT JPov;
 };
 
-extern kh6ANIM kh6_Anim;
+extern kh6ANIM KH6_Anim;
 
 VOID KH6_AnimInit( HWND hWnd );
 VOID KH6_AnimClose( VOID );
@@ -76,19 +74,10 @@ VOID KH6_AnimFlipFullScreen( VOID );
 VOID KH6_AnimExit( VOID );
 
 kh6UNIT * KH6_AnimUnitCreate( INT Size );
+
 VOID KH6_TimerInit( VOID );
 VOID KH6_TimerResponse( VOID );
 
-VOID KH6_AnimKeyboardInit( VOID );
-VOID KH6_AnimKeyboardResponse( VOID );
-
-VOID KH6_AnimMouseInit( HWND hWnd );
-VOID KH6_AnimMouseResponse( VOID );
-
-VOID KH6_AnimJoystickInit( VOID );
-VOID KH6_AnimJoystickResponse( VOID );
-
-VOID KH6_AnimInputInit( HWND hWnd );
+VOID KH6_AnimInputInit( VOID );
 VOID KH6_AnimInputResponse( VOID );
-
 #endif /* __anim_h_ */

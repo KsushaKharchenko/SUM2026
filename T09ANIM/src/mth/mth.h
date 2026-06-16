@@ -22,6 +22,7 @@
 
 #define MatrMulMatr3(A, B, C) MatrMulMatr(A, MatrMulMatr(B, C))
 #define MatrMulMatr4(A, B, C, Â) MatrMulMatr(MatrMulMatr(A, B), MatrMulMatr(C, D))
+#define MatrMulMatr5(A, B, C, D, E) MatrMulMatr3(A, B, MatrMulMatr3(C, D, E))
 
 #define UnitMatrix \
 {                  \
@@ -71,6 +72,16 @@ _inline VEC4 VecSet4( FLT X, FLT Y, FLT Z, FLT W )
   VEC4 r = {X, Y, Z, W};
  
   return r;
+}
+
+_inline VEC4 Vec4SetVec3( VEC V )
+{
+  VEC4 v;
+
+  v.X = V.X;
+  v.Y = V.Y;
+  v.Z = V.Z;
+  v.W = 1; return v;
 }
 
 _inline VEC VecSet1( FLT A )
@@ -169,6 +180,34 @@ _inline FLT VecLen2( VEC V )
 {
   return VecLen(V) * VecLen(V);
 }
+
+/* Obtain minimum of two vectors function.
+ * ARGUMENTS:
+ *   - vectors to be compare:
+ *       VEC V1, V2;
+ * RETURNS:
+ *   (VEC) result vector.
+ */
+__inline VEC VecMinVec( VEC V1, VEC V2 )
+{
+  return VecSet(V1.X < V2.X ? V1.X : V2.X,
+                V1.Y < V2.Y ? V1.Y : V2.Y,
+                V1.Z < V2.Z ? V1.Z : V2.Z);
+} /* End of 'VecMinVec' function */
+
+/* Obtain maximum of two vectors function.
+ * ARGUMENTS:
+ *   - vectors to be compare:
+ *       VEC V1, V2;
+ * RETURNS:
+ *   (VEC) result vector.
+ */
+__inline VEC VecMaxVec( VEC V1, VEC V2 )
+{
+  return VecSet(V1.X > V2.X ? V1.X : V2.X,
+                V1.Y > V2.Y ? V1.Y : V2.Y,
+                V1.Z > V2.Z ? V1.Z : V2.Z);
+} /* End of 'VecMaxVec' function */
 
 _inline VEC VecNormalize( VEC V )
 {

@@ -20,7 +20,7 @@ VOID KH6_RndInit( HWND hWnd )
 
   KH6_hRndBmFrame = NULL;
   KH6_RndResize(200, 200);
-  KH6_RndCamSet(VecSet1(5), VecSet1(0), VecSet(0, 1, 0));
+  KH6_RndCamSet(VecSet1(6), VecSet1(4), VecSet(0, 1, 0));
 }
 
 VOID KH6_RndClose( VOID )

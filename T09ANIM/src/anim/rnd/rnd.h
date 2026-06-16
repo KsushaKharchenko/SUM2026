@@ -1,5 +1,4 @@
 /* FILE NAME: rnd.h
- * PURPOSE:
  * PROGRAMMER: KH6
  * DATE: 11.06.2026
  */
@@ -12,7 +11,10 @@
 #include <wglew.h>
 #include <gl/wglext.h>
 
-#include "def.h"
+#include "res/rndres.h"
+
+/* Shaders stock maximum size */
+#define KH6_MAX_SHADERS 30
 
 extern HWND KH6_hRndWnd;
 extern HDC KH6_hRndDC;
@@ -49,32 +51,72 @@ VOID KH6_RndCamSet( VEC Loc, VEC At, VEC Up );
 typedef struct tagkh6VERTEX
 {
   VEC P;  /* Vertex position */
-  VEC2 T;
-  VEC4 C;
+  VEC2 T; /* Vertex texture coordinates */
+  VEC N;  /* Vertex normal */
+  VEC4 C; /* Vertex color */
 } kh6VERTEX;
+
+/***
+ * Shaders support
+ ***/
  
+/* Shader program store type */
+typedef struct tagkh6SHADER
+{
+  CHAR Name[KH6_MAX_SHADERS]; /* Shader filename prefix */
+  UINT ProgId;            /* Shader program Id */
+} kh6SHADER;
+ 
+ 
+/* Array of shaders */
+extern kh6SHADER KH6_RndShaders[KH6_MAX_SHADERS];
+/* Shadres array store size */
+extern INT KH6_RndShadersSize;
+
+
+/* Primitive type */
+typedef enum tagkh6PRIM_TYPE
+{
+  KH6_RND_PRIM_POINTS,   /* Array of points  – GL_POINTS */
+  KH6_RND_PRIM_LINES,    /* Line segments (by 2 points) – GL_LINES */
+  KH6_RND_PRIM_TRIMESH,  /* Triangle mesh - array of triangles – GL_TRIANGLES */
+} kh6PRIM_TYPE; 
+
 /* Primitive representation type */
 typedef struct tagkh6PRIM
 {
-  kh6VERTEX *V; /* Vertex attributes array */
-  INT NumOfV;   /* Number of vertices */
+  kh6PRIM_TYPE Type; /* Primitive type */
  
-  INT *I;       /* Index array (for trimesh – by 3 ones) */
-  INT NumOfI;   /* Number of indices */
+  INT
+    VA,              /* Vertex array Id */
+    VBuf,            /* Vertex buffer Id */
+    IBuf;            /* Index buffer Id (if 0 - use only vertex buffer) */
+ 
+  INT NumOfElements; /* Number of indices/vecrtices */
+ 
+  VEC MinBB, MaxBB;  /* Bound box */
  
   MATR Trans;   /* Additional transformation matrix */
 } kh6PRIM;
  
-/* Primitive create function.
+/* Create primitive function.
  * ARGUMENTS:
- *   - primitive to be create:
+ *   - pointer to primitive to create:
  *       kh6PRIM *Pr;
- *   - number of vertecis and indices:
- *       INT NoofV, NoofI;
- * RETURNS:
- *   (BOOL) TRUE if success, FLASE otherwise.
+ *   - primitive type:
+ *       kh6PRIM_TYPE Type;
+ *   - vertex attributes array:
+ *       kh6VERTEX *V;
+ *   - vertex attributes array size:
+ *       INT NoofV;
+ *   - primitive vertex index array:
+ *       INT *Ind;
+ *   - primitive vertex index array size:
+ *       INT NoofI;
+ * RETURNS: None.
  */
-BOOL KH6_RndPrimCreate( kh6PRIM *Pr, INT NoofV, INT NoofI );
+VOID KH6_RndPrimCreate( kh6PRIM *Pr, kh6PRIM_TYPE Type,
+                        kh6VERTEX *V, INT NoofV, INT *Ind, INT NoofI );
  
 /* Primitive free function.
  * ARGUMENTS:

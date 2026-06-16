@@ -1,5 +1,4 @@
 /* FILE NAME: unit.c
- * PURPOSE: 
  * PROGRAMMER: KH6
  * DATE: 11.06.2026
  */
@@ -38,7 +37,7 @@ static VOID KH6_UnitClose( kh6UNIT *Uni, kh6ANIM *Ani )
  * RETURNS: None.
  */
 static VOID KH6_UnitResponse( kh6UNIT *Uni, kh6ANIM *Ani )
-{
+{ 
 } /* End of 'KH6_UnitResponse' function */
  
 /* Unit render function.

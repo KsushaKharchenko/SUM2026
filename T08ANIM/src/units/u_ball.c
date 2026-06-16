@@ -10,11 +10,16 @@ typedef struct tagkh6UNIT_BALL
 {
   KH6_UNIT_BASE_FIELDS;
   kh6PRIM Ball;               /*ball primitive*/
+  VEC Pos;
+  DBL Scale, Shift;
 }kh6UNIT_BALL;
 
 static VOID KH6_UnitInit( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimCreateSphere(&Uni->Ball, 1, 18, 8);
+  KH6_RndPrimCreateSphere(&Uni->Ball, 0.5, 18, 15);
+  Uni->Pos = VecSet(Rnd1()* 8, 1, Rnd1()* 8); 
+  Uni->Scale = Rnd1() * 0.5 + 3;
+  Uni->Shift = Rnd1() * 33 + 1;
 } /* End of 'KH6_UnitInit' function */
  
 /* Unit deinitialization function.
@@ -52,14 +57,12 @@ static VOID KH6_UnitResponse( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
  */
 static VOID KH6_UnitRender( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimDraw(&Uni->Ball, MatrTranslate(VecSet(0, 0, 0)));
+  KH6_RndPrimDraw(&Uni->Ball, MatrTranslate(VecAddVec(Uni->Pos, VecSet(0, fabs(sin(Ani->Time + Uni->Shift * Uni->Scale)), 0))));
 } /* End of 'KH6_UnitRender' function */
 
  
 /* Unit creation function.
- * ARGUMENTS:
- *   - unit structure size in bytes:
- *       INT Size;
+ * ARGUMENTS: None.
  * RETURNS:
  *   (kh6UNIT *) pointer to created unit.
  */

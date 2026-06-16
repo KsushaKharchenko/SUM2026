@@ -66,6 +66,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   HDC hDC;
   PAINTSTRUCT ps;
   MINMAXINFO *minmax;
+
   INT t;
   static DBL FPS = 30;
   static INT StartTime, FrameCount;
@@ -79,23 +80,33 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   {
   case WM_GETMINMAXINFO:
     minmax = (MINMAXINFO *)lParam;
-    minmax->ptMinTrackSize.y += 100;
-    minmax->ptMaxTrackSize.y = GetSystemMetrics(SM_CYMAXTRACK) + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYBORDER) * 2;
+
+    minmax ->ptMinTrackSize.y += 100;
+    minmax ->ptMinTrackSize.y = GetSystemMetrics(SM_CYMAXTRACK) + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYBORDER) * 2;
     return 0;
 
   case WM_CREATE:
+<<<<<<< HEAD
     GlobalTimerInit();
     SetTimer(hWnd, 30, 1, NULL);
+=======
+    GLB_TimerInit();
+
+    SetTimer(hWnd, 30, 2, NULL);
+>>>>>>> 0a8637611e3f657fe14655ef26ad92ead9acf33c
     hDC = GetDC(hWnd);
     hMemDC = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
     hBm = NULL;
 
+<<<<<<< HEAD
     GlobalInit(0.8);
+=======
+>>>>>>> 0a8637611e3f657fe14655ef26ad92ead9acf33c
 
+    GLB_Init(0.8);
     FrameCount = 0;
     StartTime = clock();
-
     return 0;
 
   case WM_SIZE:
@@ -114,6 +125,17 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     return 0;
 
   case WM_TIMER:
+
+    if (W > 0 && H > 0)
+    {
+      SelectObject(hMemDC, GetStockObject(DC_BRUSH));
+      SelectObject(hMemDC, GetStockObject(DC_PEN));
+      SetDCBrushColor(hMemDC, RGB(0, 0, 0));
+      SetDCPenColor(hMemDC, RGB(0, 0, 0));
+      Rectangle(hMemDC, 0, 0, W, H);
+
+      GLB_Draw(hMemDC);
+    }
     FrameCount++;
     GlobalTimerResponse();
     t = clock();
@@ -138,6 +160,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
       TextOut(hMemDC, 0, 0, Buf, sprintf(Buf, "FPS: %.5f", FPS));
 
       /* Copy frame to screen */
+
       hDC = GetDC(hWnd);
       BitBlt(hDC, 0, 0, W, H, hMemDC, 0, 0, SRCCOPY);
       ReleaseDC(hWnd, hDC);
@@ -147,8 +170,15 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   case WM_KEYDOWN:
     if (wParam == VK_ESCAPE)
       SendMessage(hWnd, WM_CLOSE, 0, 0);
+
+
     if (wParam == 'P')
+<<<<<<< HEAD
       GlobalIsPause = !GlobalIsPause;
+=======
+      GLB_IsPause = !GLB_IsPause;
+
+>>>>>>> 0a8637611e3f657fe14655ef26ad92ead9acf33c
     return 0;
 
   case WM_ERASEBKGND:

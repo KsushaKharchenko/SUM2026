@@ -1,7 +1,6 @@
-/* FILE NAME: main.c
- * PURPOSE: main file of  project
- * PROGRAMMER: KH6
- * DATE: 11.06.2026
+/* FILE NAME  : main.c
+ * PROGRAMMER : KH6
+ * LAST UPDATE: 11.06.2026
  */
 
 #include "units/units.h"
@@ -17,6 +16,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
   WNDCLASS wc;
   MSG msg;
   HWND hWnd;
+  INT i;
  
   /* window class register */
  
@@ -42,7 +42,10 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
   /* add animation object */
 
 
-  KH6_AnimAddUnit(KH6_UnitCreateBall());
+  for (i = 0; i < 30; i++)
+    KH6_AnimAddUnit(KH6_UnitCreateBall());
+  /*KH6_AnimAddUnit(KH6_UnitCreateCow());*/
+  KH6_AnimAddUnit(KH6_UnitCreateControl());
 
   /* main program loop */
   while (TRUE)
@@ -97,13 +100,13 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     return 0;
 
   case WM_ACTIVATE:
-    kh6_Anim.IsActive = LOWORD(wParam) != WA_INACTIVE;
+    KH6_Anim.IsActive = LOWORD(wParam) != WA_INACTIVE;
     return 0;
   case WM_ENTERSIZEMOVE:
-    kh6_Anim.IsActive = FALSE;
+    KH6_Anim.IsActive = FALSE;
     return 0;
   case WM_EXITSIZEMOVE:
-    kh6_Anim.IsActive = TRUE;
+    KH6_Anim.IsActive = TRUE;
     return 0;
 
   case WM_DESTROY:

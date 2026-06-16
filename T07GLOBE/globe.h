@@ -1,4 +1,4 @@
-/* FILE NAME: mth.h
+/* FILE NAME: globe.h
  * PURPOSE: 
  * PROGRAMMER: KH6
  * DATE: 06.06.2026

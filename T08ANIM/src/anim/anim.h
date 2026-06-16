@@ -38,9 +38,28 @@ struct tagkh6ANIM
     FPS;                         /* Frames per second value */
   BOOL
     IsPause;                     /* Pause flag */
+
+  BOOL
+    IsActive;
+
+  BYTE 
+    Keys[256],      
+    KeysClick[256];
+
+  INT
+    Mx, My, Mz,
+    Mdx, Mdy, Mdz;
+
+  DBL
+    JX, JY, JZ, JR;
+
+  BYTE
+    JBut[32], JButClick[32];
+
+  INT JPov;
 };
 
-extern kh6ANIM kh6_Anim;
+extern kh6ANIM KH6_Anim;
 
 VOID KH6_AnimInit( HWND hWnd );
 VOID KH6_AnimClose( VOID );
@@ -52,7 +71,13 @@ VOID KH6_AnimFlipFullScreen( VOID );
 VOID KH6_AnimExit( VOID );
 
 kh6UNIT * KH6_AnimUnitCreate( INT Size );
-//kh6UNIT * KH6_AnimUnitCreateBall( VOID );
+
+VOID KH6_TimerInit( VOID );
+VOID KH6_TimerResponse( VOID );
+
+VOID KH6_AnimInputInit( VOID );
+VOID KH6_AnimInputResponse( VOID );
+
 
 
   

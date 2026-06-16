@@ -1,14 +1,14 @@
-/* FILE NAME: main.c
- * PURPOSE: 
+/* FILE NAME: rndbase.c
  * PROGRAMMER: KH6
  * DATE: 11.06.2026
- */
+ */                                    
 
 #include "anim/rnd/rnd.h"
 #include <wglew.h>
 #include <gl/wglext.h>
 
 #pragma comment(lib, "opengl32")
+#pragma comment(lib, "glu32")
 
 VOID KH6_RndInit( HWND hWnd )
 {
@@ -31,7 +31,7 @@ VOID KH6_RndInit( HWND hWnd )
     WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
     WGL_CONTEXT_MINOR_VERSION_ARB, 6,
     WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
-                                  /* WGL_CONTEXT_CORE_PROFILE_BIT_ARB, */
+/* WGL_CONTEXT_CORE_PROFILE_BIT_ARB, */
     0
   };
  
@@ -75,11 +75,14 @@ VOID KH6_RndInit( HWND hWnd )
   KH6_RndProjFarClip = 300;
   KH6_RndFrameW = 47;
   KH6_RndFrameH = 47;
+  KH6_RndResize(47, 47);
   KH6_RndCamSet(VecSet(5, 5, 5), VecSet(0, 0, 0), VecSet(0, 1, 0));
- }
+  KH6_RndRestInit();
+}
 
 VOID KH6_RndClose( VOID )
 {
+  KH6_RndRestClose();
   wglMakeCurrent(NULL, NULL);
   wglDeleteContext(KH6_hRndGLRC);
   ReleaseDC(KH6_hRndWnd, KH6_hRndDC);
