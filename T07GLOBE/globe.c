@@ -14,13 +14,13 @@
 #include "timer.h"
 
 
-#define GLB_MIN(A, B) ((A) < (B) ? (A) : (B))
-#define GLB_MAX(A, B) ((A) > (B) ? (A) : (B))
+#define GlobalMIN(A, B) ((A) < (B) ? (A) : (B))
+#define GlobalMAX(A, B) ((A) > (B) ? (A) : (B))
 
 static VEC Geom[GRID_H][GRID_W];
 static VEC GeomN[GRID_H][GRID_W];
-static INT GLB_Ws, GLB_Hs;
-static DBL GLB_ProjSize = 1, GLB_ProjDist = 1, GLB_Wp, GLB_Hp;
+static INT GlobalWs, GlobalHs;
+static DBL GlobalProjSize = 1, GlobalProjDist = 1, GlobalWp, GlobalHp;
 
 
 COLORREF ColorTo255( VEC Color )
@@ -30,9 +30,9 @@ COLORREF ColorTo255( VEC Color )
     G = (INT)(Color.Y * 255),
     B = (INT)(Color.Z * 255);
 
-  R = GLB_MIN(255, GLB_MAX(0, R));
-  G = GLB_MIN(255, GLB_MAX(0, G));
-  B = GLB_MIN(255, GLB_MAX(0, B));
+  R = GlobalMIN(255, GlobalMAX(0, R));
+  G = GlobalMIN(255, GlobalMAX(0, G));
+  B = GlobalMIN(255, GlobalMAX(0, B));
   return RGB(R, G, B);
 }
 
@@ -69,7 +69,7 @@ VEC RotateY( VEC P, DBL Angle )
   return NewP;
 }*/
 
-VOID GLB_Init( DBL r )
+VOID GlobalInit( DBL r )
 {
   INT i, j;
   DBL theta, phi;
@@ -99,19 +99,19 @@ VOID GLB_Init( DBL r )
     }
 }
 
-VOID GLB_Resize( INT Ws, INT Hs)
+VOID GlobalResize( INT Ws, INT Hs)
 {
-  GLB_Ws = Ws;
-  GLB_Hs = Hs;
-  if (GLB_Ws >= GLB_Hs)
-    GLB_Wp = GLB_ProjSize * GLB_Ws / GLB_Hs, 
-    GLB_Hp = GLB_ProjSize;
+  GlobalWs = Ws;
+  GlobalHs = Hs;
+  if (GlobalWs >= GlobalHs)
+    GlobalWp = GlobalProjSize * GlobalWs / GlobalHs, 
+    GlobalHp = GlobalProjSize;
   else
-    GLB_Hp = GLB_ProjSize * GLB_Hs / GLB_Ws,
-    GLB_Wp = GLB_ProjSize;
+    GlobalHp = GlobalProjSize * GlobalHs / GlobalWs,
+    GlobalWp = GlobalProjSize;
 }
 
-VOID GLB_Draw( HDC hDC)
+VOID GlobalDraw( HDC hDC)
 { 
    INT i, j, s = 2;
    DBL 
@@ -136,12 +136,12 @@ VOID GLB_Draw( HDC hDC)
        P = PointTransform(Geom[i][j], m);
 
        /* Top project plabne */
-       Xp = P.X * GLB_ProjDist / -P.Z;
-       Yp = P.Y * GLB_ProjDist / -P.Z;
+       Xp = P.X * GlobalProjDist / -P.Z;
+       Yp = P.Y * GlobalProjDist / -P.Z;
 
        /* To screen (viewport transform) */
-       pnts[i][j].x = (INT)(Xp * GLB_Ws / GLB_Wp + GLB_Ws / 2);
-       pnts[i][j].y = (INT)(-Yp * GLB_Hs / GLB_Hp + GLB_Hs / 2);
+       pnts[i][j].x = (INT)(Xp * GlobalWs / GlobalWp + GlobalWs / 2);
+       pnts[i][j].y = (INT)(-Yp * GlobalHs / GlobalHp + GlobalHs / 2);
      }
      
      /* point */

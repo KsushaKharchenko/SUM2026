@@ -19,7 +19,7 @@ static UINT64
     TimePerSec,   /* Timer resolution */
     FrameCount; /* Frames counter */
   
-VOID GLB_TimerInit( VOID )
+VOID GlobalTimerInit( VOID )
 {
   LARGE_INTEGER t;
  
@@ -28,9 +28,9 @@ VOID GLB_TimerInit( VOID )
   StartTime = OldTime = OldTimeFPS = t.QuadPart;
   PauseTime = 0;
   FrameCount = 0;
-  GLB_IsPause = FALSE;
-  GLB_Time = GLB_DeltaTime = 0;
-  GLB_FPS = 30;
+  GlobalIsPause = FALSE;
+  GlobalTime = GlobalDeltaTime = 0;
+  GlobalFPS = 30;
 }
  
 VOID TimerResponse( VOID )
@@ -43,14 +43,14 @@ VOID TimerResponse( VOID )
   GlobalTime = (DOUBLE)(t.QuadPart - StartTime) / TimePerSec;
   GlobalDeltaTime = (DOUBLE)(t.QuadPart - OldTime) / TimePerSec;
   /* Time with pause */
-  if (!GLB_IsPause)
+  if (!GlobalIsPause)
   {
-    GLB_Time = (DOUBLE)(t.QuadPart - PauseTime - StartTime) / TimePerSec;
-    GLB_DeltaTime = GlobalDeltaTime;
+    GlobalTime = (DOUBLE)(t.QuadPart - PauseTime - StartTime) / TimePerSec;
+    GlobalDeltaTime = GlobalDeltaTime;
   }
   else
   {
-    GLB_DeltaTime = 0;
+    GlobalDeltaTime = 0;
     PauseTime += t.QuadPart - OldTime;
   }
  
@@ -58,7 +58,7 @@ VOID TimerResponse( VOID )
   FrameCount++;
   if (t.QuadPart - OldTimeFPS > 3 * TimePerSec)
   {
-    GLB_FPS = FrameCount * TimePerSec / (DOUBLE)(t.QuadPart - OldTimeFPS);
+    GlobalFPS = FrameCount * TimePerSec / (DOUBLE)(t.QuadPart - OldTimeFPS);
     OldTimeFPS = t.QuadPart;
     FrameCount = 0;
   }

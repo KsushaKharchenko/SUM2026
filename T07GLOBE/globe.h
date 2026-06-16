@@ -12,10 +12,10 @@
 #define GRID_W (18 * 8)
 #define GRID_H (12 * 8)
 
-VOID GLB_Init( DOUBLE r);
+VOID GlobalInit( DOUBLE r);
 
-VOID GLB_Resize( INT Ws, INT Hs);
+VOID GlobalResize( INT Ws, INT Hs);
 
-VOID GLB_Draw( HDC hDC);
+VOID GlobalDraw( HDC hDC);
 
 #endif /* __globe_h_ */

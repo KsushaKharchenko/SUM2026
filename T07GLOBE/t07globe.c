@@ -84,14 +84,14 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     return 0;
 
   case WM_CREATE:
-    GLB_TimerInit();
+    GlobalTimerInit();
     SetTimer(hWnd, 30, 1, NULL);
     hDC = GetDC(hWnd);
     hMemDC = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
     hBm = NULL;
 
-    GLB_Init(0.8);
+    GlobalInit(0.8);
 
     FrameCount = 0;
     StartTime = clock();
@@ -101,7 +101,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   case WM_SIZE:
     W = LOWORD(lParam);
     H = HIWORD(lParam);
-    GLB_Resize(W, H);
+    GlobalResize(W, H);
 
     if (hBm != NULL)
       DeleteObject(hBm);
@@ -115,7 +115,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 
   case WM_TIMER:
     FrameCount++;
-    GLB_TimerResponse();
+    GlobalTimerResponse();
     t = clock();
     /*if (t - StartTime > CLOCKS_PER_SEC)
     {
@@ -133,7 +133,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
       Rectangle(hMemDC, 0, 0, W, H);
 
       /* Draw frame contents */
-      GLB_Draw(hMemDC);
+      GlobalDraw(hMemDC);
 
       TextOut(hMemDC, 0, 0, Buf, sprintf(Buf, "FPS: %.5f", FPS));
 
@@ -148,7 +148,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     if (wParam == VK_ESCAPE)
       SendMessage(hWnd, WM_CLOSE, 0, 0);
     if (wParam == 'P')
-      GLB_IsPause = !GLB_IsPause;
+      GlobalIsPause = !GlobalIsPause;
     return 0;
 
   case WM_ERASEBKGND:

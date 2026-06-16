@@ -9,12 +9,12 @@
 
 extern DOUBLE
     GlobalTime, GlobalDeltaTime, /* Global time and interframe interval */
-    GLB_Time, GLB_DeltaTime,             /* Time with pause and interframe interval */
-    GLB_FPS;                         /* Frames per second value */
-extern BOOL GLB_IsPause;                     /* Pause flag */
+    GlobalTime, GlobalDeltaTime,             /* Time with pause and interframe interval */
+    GlobalFPS;                         /* Frames per second value */
+extern BOOL GlobalIsPause;                     /* Pause flag */
 
-VOID GLB_TimerInit( VOID );
+VOID GlobalTimerInit( VOID );
 
-VOID GLB_TimerResponse( VOID );
+VOID GlobalTimerResponse( VOID );
 
 #endif /* __timer_h_ */
