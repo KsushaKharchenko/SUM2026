@@ -3,7 +3,7 @@
  * DATE: 11.06.2026
  */                                    
 
-#include "anim/rnd/rnd.h"
+#include "rnd.h"
 #include <wglew.h>
 #include <gl/wglext.h>
 
@@ -15,7 +15,7 @@ VOID KH6_RndInit( HWND hWnd )
   INT i, nums;
   HGLRC hRC;
   PIXELFORMATDESCRIPTOR pfd = {0};
-    INT PixelAttribs[] =
+  INT PixelAttribs[] =
   {
     WGL_DRAW_TO_WINDOW_ARB, TRUE,
     WGL_SUPPORT_OPENGL_ARB, TRUE,
@@ -31,7 +31,7 @@ VOID KH6_RndInit( HWND hWnd )
     WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
     WGL_CONTEXT_MINOR_VERSION_ARB, 6,
     WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
-/* WGL_CONTEXT_CORE_PROFILE_BIT_ARB, */
+                               /* WGL_CONTEXT_CORE_PROFILE_BIT_ARB, */
     0
   };
  
@@ -58,6 +58,7 @@ VOID KH6_RndInit( HWND hWnd )
   /* Enable a new OpenGL profile support */
   if(glewInit() != GLEW_OK)
     exit(0);
+
   wglChoosePixelFormatARB(KH6_hRndDC, PixelAttribs, NULL, 1, &i, &nums);
   hRC = wglCreateContextAttribsARB(KH6_hRndDC, NULL, ContextAttribs);
   if (hRC != NULL)
@@ -67,22 +68,34 @@ VOID KH6_RndInit( HWND hWnd )
     KH6_hRndGLRC = hRC;
     wglMakeCurrent(KH6_hRndDC, KH6_hRndGLRC);
   }
+
+#ifndef NDEBUG
+  OutputDebugString(glGetString(GL_VERSION));
+  OutputDebugString("\n");
+  OutputDebugString(glGetString(GL_VENDOR));
+  OutputDebugString("\n");
+  OutputDebugString(glGetString(GL_RENDERER));
+  OutputDebugString("\n");
+
+  glEnable(GL_DEBUG_OUTPUT);
+  glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+  glDebugMessageCallback(glDebugOutput, NULL);
+#endif /* NDEBUG */
+
   /* Render parameters setup */
   glEnable(GL_DEPTH_TEST);
- 
-  KH6_RndProjSize = 0.1;
-  KH6_RndProjDist = KH6_RndProjSize;
-  KH6_RndProjFarClip = 300;
-  KH6_RndFrameW = 47;
-  KH6_RndFrameH = 47;
+  wglSwapIntervalEXT(0);
+
   KH6_RndResize(47, 47);
   KH6_RndCamSet(VecSet(5, 5, 5), VecSet(0, 0, 0), VecSet(0, 1, 0));
+  
   KH6_RndRestInit();
 }
 
 VOID KH6_RndClose( VOID )
 {
   KH6_RndRestClose();
+
   wglMakeCurrent(NULL, NULL);
   wglDeleteContext(KH6_hRndGLRC);
   ReleaseDC(KH6_hRndWnd, KH6_hRndDC);
@@ -110,6 +123,8 @@ VOID KH6_RndStart( VOID )
   VEC4 ClearColor = {0.3, 0.47, 0.8, 1};
   FLT DepthClearValue = 1;
  
+  KH6_RndShdUpdate();
+
   /* Clear frame */
   glClearBufferfv(GL_COLOR, 0, &ClearColor.X);
   glClearBufferfv(GL_DEPTH, 0, &DepthClearValue);

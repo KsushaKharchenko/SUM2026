@@ -41,11 +41,11 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
 
   /* add animation object */
 
-
+  KH6_AnimAddUnit(KH6_UnitCreateControl());
   for (i = 0; i < 30; i++)
     KH6_AnimAddUnit(KH6_UnitCreateBall());
   /*KH6_AnimAddUnit(KH6_UnitCreateCow());*/
-  KH6_AnimAddUnit(KH6_UnitCreateControl());
+
 
   /* main program loop */
   while (TRUE)

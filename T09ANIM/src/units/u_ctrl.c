@@ -84,7 +84,7 @@ static VOID KH6_UnitRender( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
 
   SetBkMode(Ani->hDC, TRANSPARENT);
   SetTextColor(Ani->hDC, RGB(255, 255, 255));
-  TextOut(Ani->hDC, 50, 50, Buf, sprintf(Buf,  "FPS: %.3f", Ani->FPS));
+  TextOut(KH6_hRndDC, 50, 50, Buf, sprintf(Buf,  "FPS: %.3f", Ani->FPS));
 } /* End of 'KH6_UnitRender' function */ 
 
 /* Unit control function.

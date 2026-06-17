@@ -109,13 +109,22 @@ VOID KH6_RndPrimFree( kh6PRIM *Pr )
  */
 VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
 {
-  MATR wvp = MatrMulMatr3(Pr->Trans, World, KH6_RndMatrVP);
-  INT prim_type =
+  MATR wvp = MatrMulMatr(World, MatrMulMatr(KH6_RndMatrView, KH6_RndMatrProj));
+  UINT ProgId = KH6_RndShaders[0].ProgId;
+  INT 
+    loc,
+    prim_type =
     Pr->Type == KH6_RND_PRIM_LINES ? GL_LINES :
     Pr->Type == KH6_RND_PRIM_TRIMESH ? GL_TRIANGLES :
     GL_POINTS;
- 
-  glLoadMatrixf(wvp.A[0]);
+
+  //glLoadMatrixf(wvp.A[0]);
+
+  glUseProgram(ProgId);
+  if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
+  if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
+    glUniform1f(loc, KH6_Anim.Time);
  
   glBindVertexArray(Pr->VA);
   if (Pr->IBuf == 0)
@@ -128,20 +137,7 @@ VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
   }
   glBindVertexArray(0);
 
-  /*MATR Wvp = MatrMulMatr(World, MatrMulMatr(KH6_RndMatrView, KH6_RndMatrProj));
-  UINT ProgId = KH6_RndShaders[0].ProgId;
-  INT loc;
- 
-  glUseProgram(ProgId);
-  if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
-    glUniformMatrix4fv(loc, 1, FALSE, Wvp.A[0]);
-  if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
-    glUniform1f(loc, KH6_Anim.Time);
-  glBindVertexArray(Pr->VA);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Pr->IBuf);
-  glDrawElements(GL_TRIANGLES, Pr->NumOfElements, GL_UNSIGNED_INT, NULL);
-  glBindVertexArray(0);
-  glUseProgram(0);*/
+  glUseProgram(0);
 } /* End of 'KH6_RndPrimDraw' function */
 
 /* Create sphere primitive function.

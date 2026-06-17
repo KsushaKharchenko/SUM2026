@@ -7,5 +7,5 @@ in vec4 DrawColor;
 void main( void )
 {
   OutColor = DrawColor;
-  OutColor = vec4(1, 0, 0, 1);
+  OutColor = vec4(1, 0, 1, 1);
 }

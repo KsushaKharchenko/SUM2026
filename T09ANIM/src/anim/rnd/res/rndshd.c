@@ -3,18 +3,17 @@
  * LAST UPDATE: 13.06.2026
 */
 
+
 #include <stdio.h>
 #include <time.h>
- 
+
 #include "anim/rnd/rnd.h"
  
-/* Global shader */
-UINT KH6_RndProgId;
 
-/***
- * Shaders handle functions
- ***/
- 
+kh6SHADER KH6_RndShaders[KH6_MAX_SHADERS];
+/* Shadres array store size */
+INT KH6_RndShadersSize;
+
 /* Save log to file function.
  * ARGUMENTS:
  *   - shader prefix:
@@ -66,6 +65,7 @@ static CHAR * KH6_RndLoadTextFromFile( CHAR *FileName )
   /* Load text */
   rewind(F);
   fread(txt, 1, flen, F);
+ 
   fclose(F);
   return txt;
 } /* End of 'KH6_RndLoadTextFromFile' function */
@@ -90,14 +90,14 @@ static UINT KH6_RndShdLoad( CHAR *FileNamePrefix )
     {"VERT", GL_VERTEX_SHADER, 0},
     {"FRAG", GL_FRAGMENT_SHADER, 0},
   };
-  INT i, res, NoofS = sizeof(shd) / sizeof(shd[0]);
+  INT res, i, NoofS = sizeof(shd) / sizeof(shd[0]);
   UINT prg;
   BOOL is_ok = TRUE;
   static CHAR Buf[10000];
  
   for (i = 0; i < NoofS; i++)
   {
-    /* Build shader file name */
+    /* Build shader name */
     sprintf(Buf, "bin/shaders/%s/%s.glsl", FileNamePrefix, shd[i].Name);
  
     /* Load shader text from file */
@@ -112,11 +112,11 @@ static UINT KH6_RndShdLoad( CHAR *FileNamePrefix )
     shd[i].Id = glCreateShader(shd[i].Type);
     if (shd[i].Id == 0)
     {
-      KH6_RndShdLog(FileNamePrefix, shd[i].Name, "Error create shader");
+      free(txt);
+      KH6_RndShdLog(FileNamePrefix, shd[i].Name, "Error shader create");
       is_ok = FALSE;
       break;
     }
- 
     /* Send shader source text to OpenGL */
     glShaderSource(shd[i].Id, 1, &txt, NULL);
     free(txt);
@@ -151,7 +151,7 @@ static UINT KH6_RndShdLoad( CHAR *FileNamePrefix )
       /* Link program */
       glLinkProgram(prg);
       /* Errors handle */
-      glGetProgramiv(prg, GL_LINK_STATUS, &res);
+      glGetProgramiv(shd[i].Id, GL_LINK_STATUS, &res);
       if (res != 1)
       {
         glGetProgramInfoLog(shd[i].Id, sizeof(Buf), &res, Buf);
@@ -160,8 +160,7 @@ static UINT KH6_RndShdLoad( CHAR *FileNamePrefix )
       }
     }
  
- 
-  /* Error handle */
+  /* Handle errors */
   if (!is_ok)
   {
     /* Delete all shaders */
@@ -203,16 +202,9 @@ static VOID KH6_RndShdFree( UINT ProgId )
   glDeleteProgram(ProgId);
 } /* End of 'KH6_RndShdFree' function */
  
- 
 /***
  * Shaders stock functions
  ***/
- 
-/* Array of shaders */
-kh6SHADER KH6_RndShaders[KH6_MAX_SHADERS];
- 
-/* Shadres array store size */
-INT KH6_RndShadersSize;
  
 /* Add shader to stock from file function.
  * ARGUMENTS:
@@ -230,28 +222,10 @@ INT KH6_RndShdAdd( CHAR *ShaderFileNamePrefix )
       return i;
   if (KH6_RndShadersSize >= KH6_MAX_SHADERS)
     return 0;
-  strncpy(KH6_RndShaders[KH6_RndShadersSize].Name, ShaderFileNamePrefix, KH6_MAX_SHADERS - 1);
+  strncpy(KH6_RndShaders[KH6_RndShadersSize].Name, ShaderFileNamePrefix, KH6_STR_MAX - 1);
   KH6_RndShaders[KH6_RndShadersSize].ProgId = KH6_RndShdLoad(ShaderFileNamePrefix);
   return KH6_RndShadersSize++;
 } /* End of 'KH6_RndShdAdd' function */
-
-/* Shaders initialization function.
- * ARGUMENTS: None.
- * RETURNS: None.
- */
-VOID KH6_RndShdInit( VOID )
-{
-  KH6_RndProgId = KH6_RndShdLoad("default");
-} /* End of 'KH6_RndResInit' function */
- 
-/* Shaders deinitialization function.
- * ARGUMENTS: None.
- * RETURNS: None.
- */
-VOID KH6_RndShdClose( VOID )
-{
-  KH6_RndShdFree(KH6_RndProgId);
-} /* End of 'KH6_RndResInit' function */
  
 /* Update from file all load shaders function.
  * ARGUMENTS: None.
@@ -259,16 +233,34 @@ VOID KH6_RndShdClose( VOID )
  */
 VOID KH6_RndShdUpdate( VOID )
 {
-  INT t = clock();
-  static INT old_time;
+  INT i;
  
-  if (t - old_time > 2 * CLOCKS_PER_SEC)
+  for (i = 0; i < KH6_RndShadersSize; i++)
   {
-    KH6_RndShdFree(KH6_RndProgId);
-    KH6_RndProgId = KH6_RndShdLoad("default");
-    old_time = t;
+    KH6_RndShdFree(KH6_RndShaders[i].ProgId);
+    KH6_RndShaders[i].ProgId = KH6_RndShdLoad(KH6_RndShaders[i].Name);
   }
 } /* End of 'KH6_RndShdUpdate' function */
  
-//shader tables: Add/Init/Close/Update
+/* Shader storage initialize function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID KH6_RndShdInit( VOID )
+{
+  KH6_RndShdAdd("default");
+} /* End of 'KH6_RndShdInit' function */
+ 
+/* Shader storage deinitialize function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID KH6_RndShdClose( VOID )
+{
+  INT i;
+ 
+  for (i = 0; i < KH6_RndShadersSize; i++)
+    KH6_RndShdFree(KH6_RndShaders[i].ProgId);
+  KH6_RndShadersSize = 0;
+} /* End of 'KH6_RndShdClose' function */
 /* END OF 'rndshd.c' FILE */

@@ -8,19 +8,14 @@
 
 #define GLEW_STATIC
 #include <glew.h>
-#include <wglew.h>
-#include <gl/wglext.h>
 
 #include "res/rndres.h"
 
-/* Shaders stock maximum size */
-#define KH6_MAX_SHADERS 30
 
 extern HWND KH6_hRndWnd;
 extern HDC KH6_hRndDC;
 extern HGLRC KH6_hRndGLRC;
 extern INT KH6_RndFrameW, KH6_RndFrameH;
-
 
 extern DBL
   KH6_RndProjSize,     /* Project plane fit square */
@@ -56,23 +51,6 @@ typedef struct tagkh6VERTEX
   VEC4 C; /* Vertex color */
 } kh6VERTEX;
 
-/***
- * Shaders support
- ***/
- 
-/* Shader program store type */
-typedef struct tagkh6SHADER
-{
-  CHAR Name[KH6_MAX_SHADERS]; /* Shader filename prefix */
-  UINT ProgId;            /* Shader program Id */
-} kh6SHADER;
- 
- 
-/* Array of shaders */
-extern kh6SHADER KH6_RndShaders[KH6_MAX_SHADERS];
-/* Shadres array store size */
-extern INT KH6_RndShadersSize;
-
 
 /* Primitive type */
 typedef enum tagkh6PRIM_TYPE
@@ -97,6 +75,8 @@ typedef struct tagkh6PRIM
   VEC MinBB, MaxBB;  /* Bound box */
  
   MATR Trans;   /* Additional transformation matrix */
+
+  INT MtlNo;    /*Material number of shader */
 } kh6PRIM;
  
 /* Create primitive function.
@@ -172,5 +152,11 @@ BOOL KH6_RndPrimCreateSphere( kh6PRIM *Pr, DBL R, INT W, INT H );
  *   (BOOL) TRUE if success, FALSE otherwise.
  */
 BOOL KH6_RndPrimCilinder( kh6PRIM *Pr, DBL R, INT W, INT H );
+
+VOID KH6_RndPrimTriMeshAutoNormals( kh6VERTEX *V, INT NumOfV, INT *Ind, INT NumOfI);
+
+VOID APIENTRY glDebugOutput( UINT Source, UINT Type, UINT Id, UINT Severity,
+                             INT Length, const CHAR *Message,
+                             const VOID *UserParam );
 
 #endif /* __rnd_h_ */
