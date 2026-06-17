@@ -19,4 +19,11 @@ MATR
   KH6_RndMatrView, /* View coordinate system matrix */
   KH6_RndMatrProj, /* Projection coordinate system matrix */
   KH6_RndMatrVP;   /* Stored (View * Proj) matrix */
+
+VEC 
+  KH6_RndCamLoc,
+  KH6_RndCamAt,
+  KH6_RndCamDir,
+  KH6_RndCamUp,
+  KH6_RndCamRight;
  

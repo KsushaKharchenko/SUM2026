@@ -27,6 +27,12 @@ extern MATR
   KH6_RndMatrProj, /* Projection coordinate system matrix */
   KH6_RndMatrVP;   /* Stored (View * Proj) matrix */
 
+extern VEC 
+  KH6_RndCamLoc,
+  KH6_RndCamAt,
+  KH6_RndCamDir,
+  KH6_RndCamUp,
+  KH6_RndCamRight;
 
 VOID KH6_RndProjSet( VOID );
 VOID KH6_RndResize( INT W, INT H );

@@ -5,7 +5,6 @@
 typedef struct tagkh6UNIT_CONTROL
 {
   KH6_UNIT_BASE_FIELDS;
-  VEC CamLoc, CamAt;
   DBL Speed;
 
 }kh6UNIT_CONTROL;
@@ -20,8 +19,8 @@ typedef struct tagkh6UNIT_CONTROL
  */
 static VOID KH6_UnitInit( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
 {
-  Uni->CamLoc = VecSet(8, 8, 8);
-  Uni->CamAt = VecSet(0, 0, 0);
+  KH6_RndCamLoc = VecSet(8, 8, 8);
+  KH6_RndCamAt = VecSet(0, 0, 0);
   Uni->Speed = 1;
 } /* End of 'KH6_UnitInit' function */
 
@@ -46,8 +45,11 @@ static VOID KH6_UnitClose( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
  * RETURNS: None.
  */
 static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
-{
-  VEC d;
+{  
+  FLT  Wp, Hp, sx, sy;
+  DBL Dist, CosT, SinT, CosP, SinP, plen, Azimuth, Elevator;
+  VEC NewLoc, dv;
+
     /*if (Ani->Keys[VK_CONTROL] && Ani->KeysClick['F'])
   KH6_AnimFlipFullScreen();*/
   
@@ -57,12 +59,62 @@ static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
   if (Ani->KeysClick[VK_ESCAPE])
     KH6_AnimExit();
   
-  d = VecNormalize(VecSubVec(Uni->CamAt, Uni->CamLoc));
+  /*Dir = VecNormalize(VecSubVec(Uni->CamAt, Uni->CamLoc));
   Uni->CamLoc =VecAddVec(Uni->CamLoc,
-    VecMulNum(d, Ani->GlobalDeltaTime * Uni->Speed *
-    (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN])));
+    VecMulNum(Dir, Ani->GlobalDeltaTime * Uni->Speed *
+    (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN])));*/
 
-  KH6_RndCamSet(Uni->CamLoc, Uni->CamAt, VecSet(0, 1, 0));
+  Dist = VecLen(VecSubVec(KH6_RndCamAt, KH6_RndCamLoc));
+  CosT = (KH6_RndCamLoc.Y - KH6_RndCamAt.Y) / Dist;
+  SinT = sqrt(1 - CosT * CosT);
+  
+  plen = Dist * SinT;
+  CosP = (KH6_RndCamLoc.Z - KH6_RndCamAt.Z) / plen;
+  SinP = (KH6_RndCamLoc.X - KH6_RndCamAt.X) / plen;
+
+  Azimuth = D2R(atan2(SinP, CosP));
+  Elevator = D2R(atan2(SinT, CosT));
+
+  Azimuth +=
+            Uni->Speed * -30 * Ani->Keys[VK_LBUTTON] * Ani->Mdx + 
+            Ani->GlobalDeltaTime * 
+            Uni->Speed * 30 * (Ani->Keys[VK_LEFT] - Ani->Keys[VK_RIGHT]);
+  Elevator +=
+            Uni->Speed * -30 * Ani->Keys[VK_LBUTTON] * Ani->Mdy + 
+            Ani->GlobalDeltaTime * 
+            Uni->Speed * 30 * (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN]);
+  Dist += Ani->GlobalDeltaTime * 
+    (30 * Ani->Mdz +
+     8 * (Ani->Keys[VK_NEXT] - Ani->Keys[VK_PRIOR]));
+
+
+  NewLoc = PointTransform(VecSet(0, Dist, 0), MatrMulMatr(MatrRotateX(Elevator), MatrRotateY(Azimuth))); 
+  NewLoc = VecAddVec(NewLoc, KH6_RndCamAt);
+  Wp = KH6_RndProjSize;
+  Hp = KH6_RndProjSize;
+  if (Ani->W > Ani-> H)
+    Wp *= (FLT)Ani->W / Ani->H;
+  else
+    Hp *= (FLT)Ani->H / Ani->W;
+
+  if (Elevator < D2R(0.08))
+    Elevator = D2R(178);
+  else if (Elevator > D2R(178))
+    Elevator = D2R(0.08);
+  if (Dist < 0.001)
+    Dist = 0.001;
+  sx = Ani->Keys[VK_RBUTTON] * -Ani->Mdx * Wp / Ani->W * Dist / KH6_RndProjDist;
+  sy = Ani->Keys[VK_RBUTTON] * Ani->Mdy * Hp / Ani->H * Dist / KH6_RndProjDist;
+  dv =  VecAddVec(VecMulNum(KH6_RndCamRight, sx),
+                  VecMulNum(KH6_RndCamUp, sy));
+  KH6_RndCamAt = VecAddVec(KH6_RndCamAt, dv);
+  KH6_RndCamLoc = VecAddVec(KH6_RndCamLoc, dv);
+  KH6_RndCamSet(PointTransform(VecSet(0, 0, Dist), 
+                MatrMulMatr3(MatrRotateX(Elevator),
+                             MatrRotateY(Azimuth),
+                             MatrTranslate(KH6_RndCamAt))), 
+                             KH6_RndCamAt,
+                             VecSet(0, 1, 0));
 } /* End of 'KH6_UnitResponse' function */
  /* Unit render function.
  * ARGUMENTS:
