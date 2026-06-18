@@ -52,14 +52,6 @@ struct tagkh6ANIM
   INT
     Mx, My, Mz,
     Mdx, Mdy, Mdz;
-
-  DBL
-    JX, JY, JZ, JR;
-
-  BYTE
-    JBut[32], JButClick[32];
-
-  INT JPov;
 };
 
 extern kh6ANIM KH6_Anim;

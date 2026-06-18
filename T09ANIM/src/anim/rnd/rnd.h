@@ -16,6 +16,9 @@ extern HWND KH6_hRndWnd;
 extern HDC KH6_hRndDC;
 extern HGLRC KH6_hRndGLRC;
 extern INT KH6_RndFrameW, KH6_RndFrameH;
+extern INT KH6_MouseWheel;
+
+extern INT KH6_RndShdAddonI[10];
 
 extern DBL
   KH6_RndProjSize,     /* Project plane fit square */
@@ -84,6 +87,15 @@ typedef struct tagkh6PRIM
 
   INT MtlNo;    /*Material number of shader */
 } kh6PRIM;
+
+
+/* Primitive collection data type */
+typedef struct tagkh6PRIMS
+{
+  INT NumOfPrims; /* Number of primitives in array */  
+  kh6PRIM *Prims; /* Array of primitives */
+  MATR Trans;     /* Common transformation matrix */
+} kh6PRIMS;
  
 /* Create primitive function.
  * ARGUMENTS:

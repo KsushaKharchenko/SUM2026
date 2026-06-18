@@ -343,3 +343,5 @@ BOOL KH6_RndPrimLoad( kh6PRIM *Pr, CHAR *FileName )
   KH6_RndPrimCreate(Pr, KH6_RND_PRIM_TRIMESH, V, nv, Ind, nf);
   return TRUE;
 } /* End of 'KH6_RndPrimLoad' function */
+
+

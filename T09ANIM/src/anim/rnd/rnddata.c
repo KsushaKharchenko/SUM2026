@@ -8,6 +8,7 @@ HWND KH6_hRndWnd;
 HDC KH6_hRndDC;
 HGLRC KH6_hRndGLRC;
 INT KH6_RndFrameW, KH6_RndFrameH;
+INT KH6_MouseWheel;
 
 DBL
   KH6_RndProjSize = 0.1,     /* Project plane fit square */

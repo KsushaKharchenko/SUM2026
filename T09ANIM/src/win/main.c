@@ -44,7 +44,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
   KH6_AnimAddUnit(KH6_UnitCreateControl());
   for (i = 0; i < 30; i++)
     KH6_AnimAddUnit(KH6_UnitCreateBall());
-  /*KH6_AnimAddUnit(KH6_UnitCreateCow());*/
+  KH6_AnimAddUnit(KH6_UnitCreateCow());
 
 
   /* main program loop */
@@ -99,7 +99,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     EndPaint(hWnd, &ps);
     return 0;
 
-  case WM_ACTIVATE:
+  /*case WM_ACTIVATE:
     KH6_Anim.IsActive = LOWORD(wParam) != WA_INACTIVE;
     return 0;
   case WM_ENTERSIZEMOVE:
@@ -108,6 +108,10 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   case WM_EXITSIZEMOVE:
     KH6_Anim.IsActive = TRUE;
     return 0;
+
+  case WM_MOUSEWHEEL:
+    KH6_MouseWheel = KH6_MouseWheel + (SHORT)HIWORD(wParam);
+    return 0;*/
 
   case WM_DESTROY:
     KH6_AnimClose();

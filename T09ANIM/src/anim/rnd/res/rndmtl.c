@@ -26,7 +26,7 @@ INT KH6_RndMtlAdd( kh6MATERIAL *Mtl )
   return -1;
 }
 
-UINT KH6_RndMtlApply( INT MtlNo )
+/*UINT KH6_RndMtlApply( INT MtlNo )
 {
   INT prg;
   kh6MATERIAL *mtl;
@@ -34,7 +34,7 @@ UINT KH6_RndMtlApply( INT MtlNo )
   if (MtlNo < 0 || MtlNo >= KH6_RndMaterialSize)
     MtlNo = 0;
   mtl = &KH6_RndMaterials[MtlNo];
-}
+} */
 
 kh6MATERIAL KH6_RndMtlGetDef( VOID )
 {
@@ -52,6 +52,9 @@ kh6MATERIAL KH6_RndMtlGetDef( VOID )
   return def_mtl;
 }
 
-//kh6MATERIAL * KH6_RndMtlGet( INT MtlNo )
+kh6MATERIAL * KH6_RndMtlGet( INT MtlNo )
+{
+
+}
 
 /* END OF 'rndmtl.c' FILE */
