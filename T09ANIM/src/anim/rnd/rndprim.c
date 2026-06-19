@@ -124,9 +124,9 @@ VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
   wvp = MatrMulMatr(w, KH6_RndMatrVP);
 
   prim_type =
-    Pr->Type = KH6_RND_PRIM_LINES ? GL_LINES :
-    Pr->Type = KH6_RND_PRIM_TRIMESH ? GL_TRIANGLES :
-    Pr->Type = KH6_RND_PRIM_TRISTRIP ? GL_TRIANGLE_STRIP :
+    Pr->Type == KH6_RND_PRIM_LINES ? GL_LINES :
+    Pr->Type == KH6_RND_PRIM_TRIMESH ? GL_TRIANGLES :
+    Pr->Type == KH6_RND_PRIM_TRISTRIP ? GL_TRIANGLE_STRIP :
     GL_POINTS;
 
   ProgId = KH6_RndShaders[Pr->MtlNo].ProgId;
@@ -148,7 +148,7 @@ VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
     glUniform1f(loc, KH6_Anim.Time);
   if ((loc = glGetUniformLocation(ProgId, "GlobalTime")) != -1)
     glUniform1f(loc, KH6_Anim.GlobalTime);
-  if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1) !!! VEC KH6_RndCamLoc
+  if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1)
     glUniform3fv(loc, 1, &KH6_RndCamLoc.X);
 
   glBindVertexArray(Pr->VA);

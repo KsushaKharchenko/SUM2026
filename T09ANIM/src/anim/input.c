@@ -56,7 +56,7 @@ VOID KH6_AnimMouseInit( HWND hWnd )
 VOID KH6_AnimInputInit( VOID )
 {
   KH6_KeyboardInit();
-  KH6_AnimMouseInit(KH6_hRndWnd);
+  KH6_AnimMouseInit(KH6_Anim.hWnd);
 }
 VOID KH6_AnimInputResponse( VOID )
 {

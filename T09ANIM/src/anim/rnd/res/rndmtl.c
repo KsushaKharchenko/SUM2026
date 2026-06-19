@@ -4,6 +4,7 @@
 */
 
 #include "anim/rnd/rnd.h"
+#include "anim/anim.h"
 
 kh6MATERIAL KH6_RndMaterials[KH6_MAX_MATERIALS];
 INT KH6_RndMaterialSize;
@@ -45,14 +46,14 @@ VOID KH6_RndMtlInit( VOID )
   KH6_RndMaterialSize = 0;
   KH6_RndMtlAdd(&mtl);
 
-  for (i = 0; i < MTL_N; i++)
+  for (i = 0; i < MAT_N; i++)
   {
     strcpy(mtl.Name, "std::");
-    strcat(mtl.Name, MtlLib[i].Name);
-    mtl.Ka = MtlLib[i].amb;
-    mtl.Kd = MtlLib[i].diff;
-    mtl.Ks = MtlLib[i].spec;
-    mtl.Ph = MtlLib[i].shin;
+    strcat(mtl.Name, MatLib[i].Name);
+    mtl.Ka = VecSet(MatLib[i].amb[0], MatLib[i].amb[1], MatLib[i].amb[2]);
+    mtl.Kd = VecSet(MatLib[i].dif[0], MatLib[i].dif[1], MatLib[i].dif[2]);
+    mtl.Ks = VecSet(MatLib[i].spec[0], MatLib[i].spec[1], MatLib[i].spec[2]);
+    mtl.Ph = MatLib[i].shin;
     KH6_RndMtlAdd(&mtl);
   }
 }
@@ -73,8 +74,8 @@ INT KH6_RndMtlAdd( kh6MATERIAL *Mtl )
 
 UINT KH6_RndMtlApply( INT MtlNo )
 {
-  UINT prg;
   kh6MATERIAL *mtl;
+  INT loc, prg, i;
  
   /* Set material pointer */
   if (MtlNo < 0 || MtlNo >= KH6_RndMaterialSize)
@@ -108,7 +109,24 @@ UINT KH6_RndMtlApply( INT MtlNo )
     glUniform1f(loc, mtl->Ph);
   if ((loc = glGetUniformLocation(prg, "Trans")) != -1)
     glUniform1f(loc, mtl->Trans);
+
+  /* set textures */
+  for (i = 0; i < 8; i++)
+  {
+    CHAR tname[] = "IsTexture0";
+    
+    tname[9] = '0' + i;
+    if (mtl->Tex[i] != -1)
+    {
+      glActiveTexture(GL_TEXTURE0 + i);
+      glBindTexture(GL_TEXTURE_2D, KH6_RndTextures[mtl->Tex[i]].TexId);
+    }
+    if ((loc = glGetUniformLocation(prg, tname)) != -1)
+      glUniform1i(loc, mtl->Tex[i] != -1);
+  }
+  return prg;
 } 
+
 
 kh6MATERIAL KH6_RndMtlGetDef( VOID )
 {

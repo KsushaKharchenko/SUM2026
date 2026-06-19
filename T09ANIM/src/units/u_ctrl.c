@@ -26,7 +26,6 @@ static VOID KH6_UnitInit( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
 {
   KH6_RndCamLoc = VecSet(8, 8, 8);
   KH6_RndCamAt = VecSet(0, 0, 0);
-  KH6_RndCamDir = VecSet(0, 0, 0);
 } /* End of 'KH6_UnitInit' function */
 
 /* Unit deinitialization function.
@@ -51,8 +50,9 @@ static VOID KH6_UnitClose( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
  */
 static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
 {
-  FLT Dist, Wp, Hp, sx, sy;
+  FLT Dist;
   DBL CosT, SinT, CosP, SinP, plen, Azimuth, Elevator;
+  FLT sx, sy, Wp, Hp;
   VEC NewLoc, dv;
 
     /*if (Ani->Keys[VK_CONTROL] && Ani->KeysClick['F'])
@@ -85,10 +85,8 @@ static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
             Ani->GlobalDeltaTime * 
             2 * 30 * (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN]);
   Dist += Ani->GlobalDeltaTime * 
-    (30 * Ani->Mdz +
+    (300 * Ani->Mdz +
      8 * (Ani->Keys[VK_NEXT] - Ani->Keys[VK_PRIOR]));
-  
-
 
   //NewLoc = PointTransform(VecSet(0, Dist, 0), MatrMulMatr(MatrRotateX(Elevator), MatrRotateY(Azimuth))); 
   NewLoc = VecAddVec(PointTransform(VecSet(0, Dist, 0),
@@ -102,19 +100,19 @@ static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
   else
     Hp *= (FLT)Ani->H / Ani->W;
 
-  sx = Ani->Keys[VK_RBUTTON] * -Ani->Mdx * Wp / Ani->W * Dist / KH6_RndProjDist;
-  sy = Ani->Keys[VK_RBUTTON] * Ani->Mdy * Hp / Ani->H * Dist / KH6_RndProjDist;
+  sx = 0.001 * Ani->Keys[VK_RBUTTON] * Ani->Mdx * Wp / Ani->W * Dist / KH6_RndProjDist;
+  sy = 0.001 * Ani->Keys[VK_RBUTTON] * -Ani->Mdy * Hp / Ani->H * Dist / KH6_RndProjDist;
   dv =  VecAddVec(VecMulNum(KH6_RndCamRight, sx),
                   VecMulNum(KH6_RndCamUp, sy));
   KH6_RndCamAt = VecAddVec(KH6_RndCamAt, dv);
   KH6_RndCamLoc = VecAddVec(KH6_RndCamLoc, dv);
-
+ 
   KH6_RndCamSet(PointTransform(VecSet(0, 0, Dist), 
-                MatrMulMatr3(MatrRotateX(Elevator),
-                             MatrRotateY(Azimuth),
-                             MatrTranslate(KH6_RndCamAt))), 
-                             KH6_RndCamAt,
-                             VecSet(0, 1, 0));
+                               MatrMulMatr3(MatrRotateX(Elevator),
+                                            MatrRotateY(Azimuth),
+                                            MatrTranslate(KH6_RndCamAt))), 
+                KH6_RndCamAt,
+                VecSet(0, 1, 0));
 } /* End of 'KH6_UnitResponse' function */
  /* Unit render function.
  * ARGUMENTS:

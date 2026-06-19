@@ -18,7 +18,7 @@ static VOID KH6_UnitInit( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
   BITMAP bm;
   kh6GRID G;
  
-  if ((hBm = LoadImage(NULL, "bin/heights/hf.bmp", IMAGE_BITMAP, 0, 0,
+  if ((hBm = LoadImage(NULL, "bin/height/hf.bmp", IMAGE_BITMAP, 0, 0,
                        LR_LOADFROMFILE | LR_CREATEDIBSECTION)) != NULL)
   {
     INT w, h;
@@ -26,21 +26,22 @@ static VOID KH6_UnitInit( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
     GetObject(hBm, sizeof(bm), &bm);
     w = bm.bmWidth;
     h = bm.bmHeight;
-    if (bm.bmBitsPixel == 8 && KH6_RndGridCreate(&G, w, h) != NULL)
+    if (bm.bmBitsPixel == 8 && KH6_RndGridCreate(&G, w, h) != FALSE)
     {
       BYTE *Bits = bm.bmBits;
       INT x, y;
+      FLT size = 10;
 
       for (y = 0; y < h; y++)
         for (x = 0; x < w; x++)
         {
-          INT hgt = Bits[(h – 1 - y) * bm.bmWidthBytes + x];
+          INT hgt = Bits[(h - 1 - y) * bm.bmWidthBytes + x];
  
-          G.V[y * w + x].P = VecSet(x / (w – 1.0),
-                                    hgt / 255.0,
-                                    1 - y / (h – 1.0))
+          G.V[y * w + x].P = VecSet((2 * x / (w - 1.0) - 1) * size,
+                                    30 * hgt / 255.0,
+                                    (1 - 2 * y / (h - 1.0)) * size);
         }
-      KH6_RndPrimGridAutoNormals(&G);
+      KH6_RndGridAutoNormals(&G);
       KH6_RndPrimFromGrid(&Uni->Land, &G);
       KH6_RndGridFree(&G);
     }
@@ -82,7 +83,7 @@ static VOID KH6_UnitResponse( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
  */
 static VOID KH6_UnitRender( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimDraw(&Uni->Land, MatrIdentity(), 0))));
+  KH6_RndPrimDraw(&Uni->Land, MatrIdentity());
 } /* End of 'KH6_UnitRender' function */
 
  

@@ -67,7 +67,8 @@ VOID KH6_AnimRender( VOID )
 VOID KH6_AnimAddUnit( kh6UNIT *Uni )
 {
   if (KH6_Anim.NumOfUnits < kh6_MAX_UNITS)
-    KH6_Anim.Units[KH6_Anim.NumOfUnits++] = Uni, Uni->Init(Uni, &KH6_Anim);
+    KH6_Anim.Units[KH6_Anim.NumOfUnits++] = Uni,
+    Uni->Init(Uni, &KH6_Anim);
 }
 
 VOID KH6_AnimFlipFullScreen( VOID )

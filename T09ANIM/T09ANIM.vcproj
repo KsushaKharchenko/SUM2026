@@ -252,6 +252,10 @@
 						Name="Resources"
 						>
 						<File
+							RelativePath=".\src\anim\rnd\res\rndfnt.c"
+							>
+						</File>
+						<File
 							RelativePath=".\src\anim\rnd\rndgrid.c"
 							>
 						</File>

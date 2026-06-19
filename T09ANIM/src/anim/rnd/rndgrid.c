@@ -71,7 +71,7 @@ VOID KH6_RndPrimFromGrid( kh6PRIM *Pr, kh6GRID *G )
     for (j = 0; j < G->W - 1; j++)
     {
       Ind[k++] = (i + 1) * G->W + j;
-      Ind[k++] = i * G->W + j
+      Ind[k++] = i * G->W + j;
     }
     if (i != G->H - 2)
       Ind[k++] = -1;
@@ -91,17 +91,17 @@ VOID KH6_RndGridAutoNormals( kh6GRID *G )
 {
   INT i, j;
 
-  for (i = 0; i < W * H; i++)
+  for (i = 0; i < G->W * G->H; i++)
     G->V[i].N = VecSet(0, 0, 0);
 
-  for (i = 0; i < H – 1; i++)
-    for (j = 0; j < W – 1; j++)
+  for (i = 0; i < G->H - 1; i++)
+    for (j = 0; j < G->W - 1; j++)
     {
       kh6VERTEX
-        *P00 = V + i * W + j,
-        *P01 = V + i * W + j + 1,
-        *P10 = V + (i + 1) * W + j,
-        *P11 = V + (i + 1) * W + j + 1;
+        *P00 = G->V + i * G->W + j,
+        *P01 = G->V + i * G->W + j + 1,
+        *P10 = G->V + (i + 1) * G->W + j,
+        *P11 = G->V + (i + 1) * G->W + j + 1;
       VEC N;
  
       N = VecNormalize(VecCrossVec(VecSubVec(P00->P, P10->P),
@@ -117,7 +117,7 @@ VOID KH6_RndGridAutoNormals( kh6GRID *G )
       P11->N = VecAddVec(P11->N, N);
     }
     for (i = 0; i < G->W * G->H; i++)
-      V[i].N = VecNormalize(V[i].N);
+      G->V[i].N = VecNormalize(G->V[i].N);
 }
  
 /* Create sphere grid function.
@@ -134,7 +134,7 @@ VOID KH6_RndGridAutoNormals( kh6GRID *G )
 BOOL KH6_RndGridCreateSphere( kh6GRID *G, FLT R, INT W, INT H )
 {
   INT i, j, k;
-  DBL theta, phi, nl;
+  DBL theta, phi;
 
   if (!KH6_RndGridCreate(G, W, H))
     return FALSE;

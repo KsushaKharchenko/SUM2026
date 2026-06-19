@@ -98,4 +98,47 @@ kh6MATERIAL KH6_RndMtlGetDef( VOID );
 
 kh6MATERIAL * KH6_RndMtlGet( INT MtlNo );
 
+/* Font description structure */
+typedef struct tagkh6FONT
+{
+  DWORD LineH, BaseH; /* Font line height and base line height in pixels */
+  FLT AdvanceX[256];  /* Every letter shift right value (0 if no letter present) */
+} kh6FONT;
+
+/* Load font from .G3DF file function.
+ * ARGUMENTS:
+ *   - font file name:
+ *       CHAR *FileName;
+ * RETURNS:
+ *   (BOOL) TRUE if success, FALSE otherwise.
+ */
+BOOL KH6_RndFntLoad( CHAR *FileName );
+
+/* Init font subsystem function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID KH6_RndFntInit( VOID );
+
+/* Deinit font subsystem function.
+ * ARGUMENTS: None.
+ * RETURNS: None.
+ */
+VOID KH6_RndFntClose( VOID );
+
+/* Draw string function.
+ * ARGUMENTS:
+ *   - string to draw:
+ *       CHAR *Str;
+ *   - draw position:
+ *       VEC Pos;
+ *   - font size:
+ *      FLT Size;
+ * RETURNS: None.
+ */
+VOID KH6_RndFntDraw( CHAR *Str, VEC Pos, FLT Size );
+
+
+
+
 #endif /* __rndres_h_ */

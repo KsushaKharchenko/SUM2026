@@ -13,7 +13,7 @@ INT KH6_MouseWheel;
 DBL
   KH6_RndProjSize = 0.1,     /* Project plane fit square */
   KH6_RndProjDist = 0.1,     /* Distance to project plane from viewer (near) */
-  KH6_RndProjFarClip = 300;  /* Distance to project far clip plane (far) */
+  KH6_RndProjFarClip = 3000;  /* Distance to project far clip plane (far) */
  
 MATR
   KH6_RndMatrView, /* View coordinate system matrix */
