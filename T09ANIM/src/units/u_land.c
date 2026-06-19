@@ -16,17 +16,17 @@ static VOID KH6_UnitInit( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
  
   HBITMAP hBm;
   BITMAP bm;
-  kh6GRID G;
  
   if ((hBm = LoadImage(NULL, "bin/height/hf.bmp", IMAGE_BITMAP, 0, 0,
                        LR_LOADFROMFILE | LR_CREATEDIBSECTION)) != NULL)
   {
     INT w, h;
+    kh6GRID G;
 
     GetObject(hBm, sizeof(bm), &bm);
     w = bm.bmWidth;
     h = bm.bmHeight;
-    if (bm.bmBitsPixel == 8 && KH6_RndGridCreate(&G, w, h) != FALSE)
+    if (KH6_RndGridCreate(&G, w, h))
     {
       BYTE *Bits = bm.bmBits;
       INT x, y;
@@ -37,8 +37,8 @@ static VOID KH6_UnitInit( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
         {
           INT hgt = Bits[(h - 1 - y) * bm.bmWidthBytes + x];
  
-          G.V[y * w + x].P = VecSet((2 * x / (w - 1.0) - 1) * size,
-                                    30 * hgt / 255.0,
+          G.V[y * G.W + x].P = VecSet((2 * x / (w - 1.0) - 1) * size,
+                                    10 * hgt / 255.0,
                                     (1 - 2 * y / (h - 1.0)) * size);
         }
       KH6_RndGridAutoNormals(&G);

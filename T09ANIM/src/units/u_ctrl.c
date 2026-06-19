@@ -64,6 +64,22 @@ static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
   if (Ani->KeysClick[VK_ESCAPE])
     KH6_AnimExit();
 
+  if (Ani->KeysClick[VK_F8])
+  {
+    HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    DWORD NumCharsWritten;
+    COORD Pos = {0};
+ 
+    GetConsoleScreenBufferInfo(hCon, &info);
+    FillConsoleOutputCharacter(hCon, ' ',
+      (UINT)(info.dwSize.X * info.dwSize.Y), Pos, &NumCharsWritten);  
+    FillConsoleOutputAttribute(hCon, 0x0F,
+      (UINT)(info.dwSize.X * info.dwSize.Y), Pos, &NumCharsWritten);  
+    SetConsoleCursorPosition(hCon, info.dwCursorPosition);
+    SetConsoleCursorPosition(hCon, Pos);
+  }
+
 
   Dist = VecLen(VecSubVec(KH6_RndCamAt, KH6_RndCamLoc));
   CosT = (KH6_RndCamLoc.Y - KH6_RndCamAt.Y) / Dist;
@@ -95,19 +111,20 @@ static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
 
   Wp = KH6_RndProjSize;
   Hp = KH6_RndProjSize;
+
   if (Ani->W > Ani-> H)
     Wp *= (FLT)Ani->W / Ani->H;
   else
     Hp *= (FLT)Ani->H / Ani->W;
 
-  sx = 0.001 * Ani->Keys[VK_RBUTTON] * Ani->Mdx * Wp / Ani->W * Dist / KH6_RndProjDist;
-  sy = 0.001 * Ani->Keys[VK_RBUTTON] * -Ani->Mdy * Hp / Ani->H * Dist / KH6_RndProjDist;
+  sx = Ani->Keys[VK_RBUTTON] * -Ani->Mdx * Wp / Ani->W * Dist / KH6_RndProjDist;
+  sy = Ani->Keys[VK_RBUTTON] * Ani->Mdy * Hp / Ani->H * Dist / KH6_RndProjDist;
   dv =  VecAddVec(VecMulNum(KH6_RndCamRight, sx),
                   VecMulNum(KH6_RndCamUp, sy));
   KH6_RndCamAt = VecAddVec(KH6_RndCamAt, dv);
   KH6_RndCamLoc = VecAddVec(KH6_RndCamLoc, dv);
  
-  KH6_RndCamSet(PointTransform(VecSet(0, 0, Dist), 
+  KH6_RndCamSet(PointTransform(VecSet(0, Dist, 0), 
                                MatrMulMatr3(MatrRotateX(Elevator),
                                             MatrRotateY(Azimuth),
                                             MatrTranslate(KH6_RndCamAt))), 

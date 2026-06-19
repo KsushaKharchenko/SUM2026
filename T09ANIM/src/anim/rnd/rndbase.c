@@ -5,7 +5,7 @@
 
 #include "rnd.h"
 #include <wglew.h>
-#include <gl/wglext.h>
+#include <GL/wglext.h>
 
 #pragma comment(lib, "opengl32")
 #pragma comment(lib, "glu32")
@@ -135,9 +135,9 @@ VOID KH6_RndEnd( VOID )
   glFinish();
 }
  
- VOID KH6_RndCamSet( VEC Loc, VEC At, VEC Up )
+ VOID KH6_RndCamSet( VEC Loc, VEC At, VEC Up1 )
 {
-  KH6_RndMatrView = MatrView(Loc, At, Up);
+  KH6_RndMatrView = MatrView(Loc, At, Up1);
   KH6_RndMatrVP = MatrMulMatr(KH6_RndMatrView, KH6_RndMatrProj);
   
   KH6_RndCamLoc = Loc;

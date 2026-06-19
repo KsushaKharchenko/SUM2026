@@ -18,11 +18,10 @@ BOOL KH6_RndGridCreate( kh6GRID *G, INT W, INT H )
 {
   INT i, j;
   
-  G->V = malloc(sizeof(kh6VERTEX) * W * H);
-  if (G->V == NULL)
+  memset(G, 0, sizeof(kh6GRID));
+  if ((G->V = malloc(sizeof(kh6VERTEX) * W * H)) == NULL)
     return FALSE;
 
-  memset(G->V, 0, sizeof(kh6VERTEX) * W * H);
   G->W = W;
   G->H = H;
 
@@ -32,7 +31,7 @@ BOOL KH6_RndGridCreate( kh6GRID *G, INT W, INT H )
       G->V[i * W + j].N = VecSet(0, 1, 0);
       G->V[i * W + j].T.X = j / (W - 1.0);
       G->V[i * W + j].T.Y = i / (H - 1.0);
-      G->V[i * W + j].P = VecSet(j, 1, -i);
+      G->V[i * W + j].P = VecSet(j, 0, -i);
       G->V[i * W + j].C = VecSet4(1, 1, 1, 1);
     }
   return TRUE;
