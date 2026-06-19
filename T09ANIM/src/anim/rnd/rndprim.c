@@ -4,7 +4,7 @@
  */
 #include <string.h>
 #include <stdio.h>
-#include "rnd.h"
+
 #include "anim/anim.h"
  
 /* Create primitive function.
@@ -93,6 +93,9 @@ VOID KH6_RndPrimCreate( kh6PRIM *Pr, kh6PRIM_TYPE Type,
  */
 VOID KH6_RndPrimFree( kh6PRIM *Pr )
 {
+  if (Pr == NULL)
+    return;
+
   glDeleteVertexArrays(1, &Pr->VA);
   glDeleteBuffers(1, &Pr->VBuf);
   glDeleteBuffers(1, &Pr->IBuf);
@@ -109,23 +112,45 @@ VOID KH6_RndPrimFree( kh6PRIM *Pr )
  */
 VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
 {
-  MATR wvp = MatrMulMatr(World, MatrMulMatr(KH6_RndMatrView, KH6_RndMatrProj));
-  UINT ProgId = KH6_RndShaders[0].ProgId;
-  INT 
-    loc,
-    prim_type =
-    Pr->Type == KH6_RND_PRIM_LINES ? GL_LINES :
-    Pr->Type == KH6_RND_PRIM_TRIMESH ? GL_TRIANGLES :
+  MATR w, winv, wvp;
+  UINT ProgId;
+  INT loc, prim_type;
+
+  if (Pr == NULL)
+    return;
+
+  w = MatrMulMatr(Pr->Trans, World);
+  winv = MatrTranspose(MatrInverse(w));
+  wvp = MatrMulMatr(w, KH6_RndMatrVP);
+
+  prim_type =
+    Pr->Type = KH6_RND_PRIM_LINES ? GL_LINES :
+    Pr->Type = KH6_RND_PRIM_TRIMESH ? GL_TRIANGLES :
+    Pr->Type = KH6_RND_PRIM_TRISTRIP ? GL_TRIANGLE_STRIP :
     GL_POINTS;
 
-  //glLoadMatrixf(wvp.A[0]);
+  ProgId = KH6_RndShaders[Pr->MtlNo].ProgId;
+  if (ProgId == 0)
+    return;
 
   glUseProgram(ProgId);
+ 
+  /* Pass render uniforms */
   if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
+  if ((loc = glGetUniformLocation(ProgId, "MatrW")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, w.A[0]);
+  if ((loc = glGetUniformLocation(ProgId, "MatrWInv")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, winv.A[0]);
+  if ((loc = glGetUniformLocation(ProgId, "MatrWInv")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, winv.A[0]);
   if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
     glUniform1f(loc, KH6_Anim.Time);
- 
+  if ((loc = glGetUniformLocation(ProgId, "GlobalTime")) != -1)
+    glUniform1f(loc, KH6_Anim.GlobalTime);
+  if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1) !!! VEC KH6_RndCamLoc
+    glUniform3fv(loc, 1, &KH6_RndCamLoc.X);
+
   glBindVertexArray(Pr->VA);
   if (Pr->IBuf == 0)
     glDrawArrays(prim_type, 0, Pr->NumOfElements);

@@ -138,8 +138,10 @@ VOID KH6_RndEnd( VOID )
  VOID KH6_RndCamSet( VEC Loc, VEC At, VEC Up )
 {
   KH6_RndMatrView = MatrView(Loc, At, Up);
-  //KH6_RndMatrVP = MatrMulMatr(KH6_RndMatrView, KH6_RndMatrProj);
-
+  KH6_RndMatrVP = MatrMulMatr(KH6_RndMatrView, KH6_RndMatrProj);
+  
+  KH6_RndCamLoc = Loc;
+  KH6_RndCamAt = At;
   KH6_RndCamRight = VecSet(KH6_RndMatrView.A[0][0],
                            KH6_RndMatrView.A[1][0],
                            KH6_RndMatrView.A[2][0]);
@@ -149,8 +151,6 @@ VOID KH6_RndEnd( VOID )
   KH6_RndCamDir = VecSet(-KH6_RndMatrView.A[0][2],
                          -KH6_RndMatrView.A[1][2],
                          -KH6_RndMatrView.A[2][2]);
-  KH6_RndCamLoc = Loc;
-  KH6_RndCamAt = At;
 }
 
 VOID KH6_RndProjSet( VOID )

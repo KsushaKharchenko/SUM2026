@@ -31,5 +31,13 @@ kh6UNIT * KH6_UnitCreateCow( VOID );
  *   (kh6UNIT *) pointer to created unit.
  */
 kh6UNIT * KH6_UnitCreateControl( VOID );
+/* Unit creation function.
+ * ARGUMENTS:
+ *   - unit structure size in bytes:
+ *       INT Size;
+ * RETURNS:
+ *   (kh6UNIT *) pointer to created unit.
+ */
+kh6UNIT * KH6_UnitCreateLand( VOID );
 
 #endif /* __units_h_ */

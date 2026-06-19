@@ -107,11 +107,11 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     return 0;
   case WM_EXITSIZEMOVE:
     KH6_Anim.IsActive = TRUE;
-    return 0;
+    return 0;*/
 
   case WM_MOUSEWHEEL:
     KH6_MouseWheel = KH6_MouseWheel + (SHORT)HIWORD(wParam);
-    return 0;*/
+    return 0;
 
   case WM_DESTROY:
     KH6_AnimClose();

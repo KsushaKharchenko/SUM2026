@@ -67,6 +67,7 @@ typedef enum tagkh6PRIM_TYPE
   KH6_RND_PRIM_POINTS,   /* Array of points  – GL_POINTS */
   KH6_RND_PRIM_LINES,    /* Line segments (by 2 points) – GL_LINES */
   KH6_RND_PRIM_TRIMESH,  /* Triangle mesh - array of triangles – GL_TRIANGLES */
+  KH6_RND_PRIM_TRISTRIP,
 } kh6PRIM_TYPE; 
 
 /* Primitive representation type */
@@ -176,5 +177,64 @@ VOID KH6_RndPrimTriMeshAutoNormals( kh6VERTEX *V, INT NumOfV, INT *Ind, INT NumO
 VOID APIENTRY glDebugOutput( UINT Source, UINT Type, UINT Id, UINT Severity,
                              INT Length, const CHAR *Message,
                              const VOID *UserParam );
+
+/* Grid topology representation type */
+typedef struct tagkh6GRID
+{
+  INT W, H;      /* Grid size (in vertices) */
+  kh6VERTEX *V;  /* Array (2D) of vertex */
+} kh6GRID;
+ 
+ 
+/* Create grid function.
+ * ARGUMENTS:
+ *   - grid data:
+ *       kh6GRID *G;
+ *   - grid size:
+ *       INT W, H;
+ * RETURNS:
+ *   (BOOL) TRUE if success, FALSE otherwise.
+ */
+BOOL KH6_RndGridCreate( kh6GRID *G, INT W, INT H );
+ 
+/* Free grid function.
+ * ARGUMENTS:
+ *   - grid data:
+ *       kh6GRID *G;
+ * RETURNS: None.
+ */
+VOID KH6_RndGridFree( kh6GRID *G );
+ 
+/* Create primitive from grid function.
+ * ARGUMENTS:
+ *   - primitive to be create:
+ *       kh6PRIM *Pr;
+ *   - grid data:
+ *       kh6GRID *G;
+ * RETURNS: None.
+ */
+VOID KH6_RndPrimFromGrid( kh6PRIM *Pr, kh6GRID *G );
+ 
+/* Build grid normals function.
+ * ARGUMENTS:
+ *   - grid data:
+ *       kh6GRID *G;
+ * RETURNS: None.
+ */
+VOID KH6_RndGridAutoNormals( kh6GRID *G );
+ 
+/* Create sphere grid function.
+ * ARGUMENTS:
+ *   - grid data:
+ *       kh6GRID *G;
+ *   - sphere radius:
+ *       FLT R;
+ *   - grid size:
+ *       INT W, H;
+ * RETURNS:
+ *   (BOOL) TRUE if success, FALSE otherwise.
+ */
+BOOL KH6_RndGridCreateSphere( kh6GRID *G, FLT R, INT W, INT H );
+
 
 #endif /* __rnd_h_ */
