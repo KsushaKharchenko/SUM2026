@@ -7,7 +7,7 @@ in vec4 DrawColor;
 in vec3 DrawNormal;
 in vec3 DrawPos;
 in vec3 DrawPosOrg;
-in vec2 DrawTwxCoord;
+in vec2 DrawTexCoord;
 
 uniform vec3 CamLoc;
 uniform float Time, GlobalTime;
@@ -39,6 +39,8 @@ vec3 Shade( vec3 P, vec3 N, vec3 V, vec3 R, vec3 L, vec3 LColor, float F )
 
 void main( void )
 {
+  if (AddonI1 > abs(sin(Time * 0.1)) * AddonI0)
+   ;// discard;
   if (DrawPos.y + DrawPos.x > 30 * abs(sin(Time)))
     ;//discard;
 
@@ -48,7 +50,7 @@ void main( void )
 
   OutColor = DrawColor;
 
-  OutColor = vec4(vec3(1, 0.8, 0.1) * dot(N, L) + vec3(1, 0.8, 1)  * dot(N, L1), 1);
+  OutColor = v ec4(vec3(1, 0.8, 0.1) * dot(N, L) + vec3(1, 0.8, 1)  * dot(N, L1), 1);
   vec3 L = normalize(vec3(10 * sin(0.8 * Time), 1, 1));
   vec3 L1 = normalize(vec3(1, 1, 10 * sin(0.5 * Time + 1)));
 

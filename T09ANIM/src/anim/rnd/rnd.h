@@ -96,6 +96,7 @@ typedef struct tagkh6PRIMS
   INT NumOfPrims; /* Number of primitives in array */  
   kh6PRIM *Prims; /* Array of primitives */
   MATR Trans;     /* Common transformation matrix */
+  VEC MaxBB, MinBB;
 } kh6PRIMS;
  
 /* Create primitive function.
