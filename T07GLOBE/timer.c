@@ -11,7 +11,6 @@
 
 typedef unsigned long long UINT64;
 
-<<<<<<< HEAD
 static UINT64 
     StartTime,    /* Start program time */
     OldTime,      /* Previous frame time */
@@ -20,15 +19,11 @@ static UINT64
     TimePerSec,   /* Timer resolution */
     FrameCount; /* Frames counter */
   
-VOID GlobalTimerInit( VOID )
-=======
 /* Definitions of global variables */
 DOUBLE GlobalTime = 0.0,
        GlobalDeltaTime = 0.0,
-       GLB_Time = 0.0,
-       GLB_DeltaTime = 0.0,
-       GLB_FPS = 30.0;
-BOOL GLB_IsPause = FALSE;
+       GlobalFPS = 30.0;
+BOOL GlobalIsPause = FALSE;
 
 static UINT64
     StartTime = 0,
@@ -39,7 +34,6 @@ static UINT64
     FrameCount = 0;
 
 VOID GLB_TimerInit(VOID)
->>>>>>> 0a8637611e3f657fe14655ef26ad92ead9acf33c
 {
   LARGE_INTEGER t;
   LARGE_INTEGER frequency;
@@ -57,7 +51,7 @@ VOID GLB_TimerInit(VOID)
   GlobalFPS = 30;
 }
 
-VOID GLB_TimerResponse(VOID)  /* Исправлено имя функции */
+VOID GLB_TimerResponse(VOID) 
 {
   LARGE_INTEGER t;
 

@@ -86,23 +86,15 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     return 0;
 
   case WM_CREATE:
-<<<<<<< HEAD
-    GlobalTimerInit();
+    GLB_TimerInit();
     SetTimer(hWnd, 30, 1, NULL);
-=======
     GLB_TimerInit();
 
     SetTimer(hWnd, 30, 2, NULL);
->>>>>>> 0a8637611e3f657fe14655ef26ad92ead9acf33c
     hDC = GetDC(hWnd);
     hMemDC = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
     hBm = NULL;
-
-<<<<<<< HEAD
-    GlobalInit(0.8);
-=======
->>>>>>> 0a8637611e3f657fe14655ef26ad92ead9acf33c
 
     GLB_Init(0.8);
     FrameCount = 0;
@@ -112,7 +104,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   case WM_SIZE:
     W = LOWORD(lParam);
     H = HIWORD(lParam);
-    GlobalResize(W, H);
+    GLB_Resize(W, H);
 
     if (hBm != NULL)
       DeleteObject(hBm);
@@ -137,7 +129,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
       GLB_Draw(hMemDC);
     }
     FrameCount++;
-    GlobalTimerResponse();
+    GLB_TimerResponse();
     t = clock();
     /*if (t - StartTime > CLOCKS_PER_SEC)
     {
@@ -155,7 +147,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
       Rectangle(hMemDC, 0, 0, W, H);
 
       /* Draw frame contents */
-      GlobalDraw(hMemDC);
+      GLB_Draw(hMemDC);
 
       TextOut(hMemDC, 0, 0, Buf, sprintf(Buf, "FPS: %.5f", FPS));
 
@@ -173,12 +165,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 
 
     if (wParam == 'P')
-<<<<<<< HEAD
       GlobalIsPause = !GlobalIsPause;
-=======
-      GLB_IsPause = !GLB_IsPause;
-
->>>>>>> 0a8637611e3f657fe14655ef26ad92ead9acf33c
     return 0;
 
   case WM_ERASEBKGND:

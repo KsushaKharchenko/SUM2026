@@ -306,7 +306,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\units\u_g3dm.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\units\u_land.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\u_tex.c"
 					>
 				</File>
 				<File
