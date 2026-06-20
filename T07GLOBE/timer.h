@@ -13,8 +13,8 @@ extern DOUBLE
     GlobalFPS;                         /* Frames per second value */
 extern BOOL GlobalIsPause;                     /* Pause flag */
 
-VOID GlobalTimerInit( VOID );
+VOID GLB_TimerInit( VOID );
 
-VOID GlobalTimerResponse( VOID );
+VOID GLB_TimerResponse( VOID );
 
 #endif /* __timer_h_ */

@@ -30,15 +30,20 @@ static VOID KH6_UnitInit( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
     {
       BYTE *Bits = bm.bmBits;
       INT x, y;
-      FLT size = 10;
+      FLT size = 1;
 
       for (y = 0; y < h; y++)
         for (x = 0; x < w; x++)
         {
           INT hgt = Bits[(h - 1 - y) * bm.bmWidthBytes + x];
  
+<<<<<<< HEAD
           G.V[y * G.W + x].P = VecSet((2 * x / (w - 1.0) - 1) * size,
                                     10 * hgt / 255.0,
+=======
+          G.V[y * w + x].P = VecSet((2 * x / (w - 1.0) - 1) * size,
+                                    1 * hgt / 255.0,
+>>>>>>> dbac5203c39a27a45d4b61303f66654af4a663cc
                                     (1 - 2 * y / (h - 1.0)) * size);
         }
       KH6_RndGridAutoNormals(&G);

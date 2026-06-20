@@ -148,8 +148,8 @@ VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
     glUniform1f(loc, KH6_Anim.Time);
   if ((loc = glGetUniformLocation(ProgId, "GlobalTime")) != -1)
     glUniform1f(loc, KH6_Anim.GlobalTime);
-  if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1)
-    glUniform3fv(loc, 1, &KH6_RndCamLoc.X);
+  //if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1)
+    //glUniform3fv(loc, 1, &KH6_RndCamLoc.X);
 
   glBindVertexArray(Pr->VA);
   if (Pr->IBuf == 0)

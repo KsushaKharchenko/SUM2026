@@ -12,10 +12,6 @@
 
 #include "globe.h"
 #include "timer.h"
-<<<<<<< HEAD
-=======
-
->>>>>>> 28670aa1d489638a381d15375787722135303b8b
 
 #define GlobalMIN(A, B) ((A) < (B) ? (A) : (B))
 #define GlobalMAX(A, B) ((A) > (B) ? (A) : (B))
@@ -72,7 +68,7 @@ VEC RotateY( VEC P, DBL Angle )
   return NewP;
 }*/
 
-VOID GlobalInit( DBL r )
+VOID GLB_Init( DBL r )
 {
   INT i, j;
   DBL theta, phi;
@@ -102,7 +98,7 @@ VOID GlobalInit( DBL r )
     }
 }
 
-VOID GlobalResize( INT Ws, INT Hs)
+VOID GLB_Resize( INT Ws, INT Hs)
 {
   GlobalWs = Ws;
   GlobalHs = Hs;
@@ -114,11 +110,11 @@ VOID GlobalResize( INT Ws, INT Hs)
     GlobalWp = GlobalProjSize;
 }
 
-VOID GlobalDraw( HDC hDC)
+VOID GLB_Draw( HDC hDC)
 { 
    INT i, j, s = 2;
    DBL 
-     t = GLB_Time,
+     t = GlobalTime,
      Xp, Yp, nl;
    VEC P, N, L, L1, C = {0.3, 0.8, 0.5};
    POINT pts[4];

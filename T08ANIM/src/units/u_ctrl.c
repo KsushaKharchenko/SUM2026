@@ -21,7 +21,7 @@ static VOID KH6_UnitInit( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
 {
   KH6_RndCamLoc = VecSet(8, 8, 8);
   KH6_RndCamAt = VecSet(0, 0, 0);
-  Uni->Speed = 1;
+  Uni->Speed = 10;
 } /* End of 'KH6_UnitInit' function */
 
 /* Unit deinitialization function.
@@ -88,7 +88,7 @@ static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
      8 * (Ani->Keys[VK_NEXT] - Ani->Keys[VK_PRIOR]));
 
 
-  NewLoc = PointTransform(VecSet(0, Dist, 0), MatrMulMatr(MatrRotateX(Elevator), MatrRotateY(Azimuth))); 
+  NewLoc = PointTransform(VecSet(0, 0, Dist), MatrMulMatr(MatrRotateX(Elevator), MatrRotateY(Azimuth))); 
   NewLoc = VecAddVec(NewLoc, KH6_RndCamAt);
   Wp = KH6_RndProjSize;
   Hp = KH6_RndProjSize;
@@ -97,12 +97,12 @@ static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
   else
     Hp *= (FLT)Ani->H / Ani->W;
 
-  if (Elevator < D2R(0.08))
+  /*if (Elevator < D2R(0.08))
     Elevator = D2R(178);
   else if (Elevator > D2R(178))
     Elevator = D2R(0.08);
   if (Dist < 0.001)
-    Dist = 0.001;
+    Dist = 0.001;*/
   sx = Ani->Keys[VK_RBUTTON] * -Ani->Mdx * Wp / Ani->W * Dist / KH6_RndProjDist;
   sy = Ani->Keys[VK_RBUTTON] * Ani->Mdy * Hp / Ani->H * Dist / KH6_RndProjDist;
   dv =  VecAddVec(VecMulNum(KH6_RndCamRight, sx),
@@ -124,7 +124,7 @@ static VOID KH6_UnitResponse( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
  *       kh6ANIM *Ani;
  * RETURNS: None.
  */
-kh6UNIT * KH6_UnitRender( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
+static VOID KH6_UnitRender( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
 {
   CHAR Buf[102];
 

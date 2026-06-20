@@ -19,6 +19,31 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
   INT i;
   CONSOLE_FONT_INFOEX cfi = {0};
   HWND hConWnd;
+<<<<<<< HEAD
+=======
+ 
+  /* Create console */
+  AllocConsole();
+ 
+  cfi.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+  GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+  cfi.dwFontSize.Y = 18;
+  cfi.FontWeight = FW_BOLD;
+  SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+ 
+  freopen("CONOUT$", "w", stdout);
+  system("@chcp 1251 > nul");
+  printf("\x1b[38;2;%d;%d;%dm \x1b[48;2;%d;%d;%dm", 255, 255, 0, 0, 102, 102);
+  printf("Группа компьютерной графики ФМЛ № 30\n");
+  printf("\x1b[38;2;%d;%d;%dm\x1b[48;2;%d;%d;%dm", 0, 255, 0, 90, 90, 90);
+  printf("Computer Graphics Support Group\n");
+  printf("\x1b[38;2;%d;%d;%dm\x1b[48;2;%d;%d;%dm", 255, 255, 255, 0, 0, 0);
+  fflush(stdout);
+ 
+  hConWnd = GetConsoleWindow();
+  /* MoveWindow(hConWnd, 2560 + 1920 / 2, 0, 1920 / 2, 1080, FALSE); */
+  SetWindowPos(hConWnd, HWND_TOP, 2560 + 1920 / 2, 0, 1920 / 2, 1000, 0);
+>>>>>>> dbac5203c39a27a45d4b61303f66654af4a663cc
  
   /* Create console */
   AllocConsole();
@@ -65,12 +90,23 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
 
     
   /* add animation object */
+<<<<<<< HEAD
   //for (i = 0; i < 30; i++)
     //KH6_AnimAddUnit(KH6_UnitCreateBall());
   KH6_AnimAddUnit(KH6_UnitCreateCow());
   KH6_AnimAddUnit(KH6_UnitCreateLand());
   //KH6_AnimAddUnit(KH6_UnitCreateControl());
 
+=======
+
+  //KH6_AnimAddUnit(KH6_UnitCreateControl());
+  //for (i = 0; i < 30; i++)
+   // KH6_AnimAddUnit(KH6_UnitCreateBall());
+  KH6_AnimAddUnit(KH6_UnitCreateCow());
+  //KH6_AnimAddUnit(KH6_UnitCreateLand());
+  //KH6_AnimAddUnit(KH6_UnitCreateTexture());
+  //KH6_AnimAddUnit(KH6_AnimUnitCreateG3DM());
+>>>>>>> dbac5203c39a27a45d4b61303f66654af4a663cc
 
   /* main program loop */
   while (TRUE)
