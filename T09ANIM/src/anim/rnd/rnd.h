@@ -1,25 +1,20 @@
 /* FILE NAME: rnd.h
+ * PURPOSE: 3D math implementation module.
  * PROGRAMMER: KH6
- * DATE: 11.06.2026
+ * DATE: 09.06.2026
  */
-
-#ifndef __rnd_h_
-#define __rnd_h_
-
+ 
 #define GLEW_STATIC
-#include <glew.h>
-
+#include <GL/glew.h>
+ 
 #include "res/rndres.h"
-
-
-extern HWND KH6_hRndWnd;
-extern HDC KH6_hRndDC;
+ 
+extern HWND KH6_hRndWnd;        /* Work window handle */
+extern HDC KH6_hRndDC;     /* Work window memory device context  */
+extern INT KH6_RndFrameW, KH6_RndFrameH; /* Work window size */
 extern HGLRC KH6_hRndGLRC;
-extern INT KH6_RndFrameW, KH6_RndFrameH;
 extern INT KH6_MouseWheel;
-
-extern INT KH6_RndShdAddonI[10];
-
+ 
 extern DBL
   KH6_RndProjSize,     /* Project plane fit square */
   KH6_RndProjDist,     /* Distance to project plane from viewer (near) */
@@ -29,38 +24,27 @@ extern MATR
   KH6_RndMatrView, /* View coordinate system matrix */
   KH6_RndMatrProj, /* Projection coordinate system matrix */
   KH6_RndMatrVP;   /* Stored (View * Proj) matrix */
-
-extern VEC 
-  KH6_RndCamLoc,
-  KH6_RndCamAt,
-  KH6_RndCamDir,
-  KH6_RndCamUp,
-  KH6_RndCamRight;
-
-VOID KH6_RndProjSet( VOID );
-VOID KH6_RndResize( INT W, INT H );
+ 
 VOID KH6_RndInit( HWND hWnd );
 VOID KH6_RndClose( VOID );
-VOID KH6_RndEnd( VOID );
+VOID KH6_RndResize( INT W, INT H );
 VOID KH6_RndCopyFrame( VOID );
 VOID KH6_RndStart( VOID );
+VOID KH6_RndEnd( VOID );
+VOID KH6_RndProjSet( VOID );
 VOID KH6_RndCamSet( VEC Loc, VEC At, VEC Up );
-
-
-/***
- * Primitive handle
- ***/
  
-/* Vertex representation type */
+ 
+extern VEC KH6_RndCamLoc, KH6_RndCamAt, KH6_RndCamRight, KH6_RndCamUp, KH6_RndCamDir; 
+ 
 typedef struct tagkh6VERTEX
-{
-  VEC P;  /* Vertex position */
-  VEC2 T; /* Vertex texture coordinates */
-  VEC N;  /* Vertex normal */
-  VEC4 C; /* Vertex color */
+ {
+  VEC P;   /* ïîçèöèÿ */
+  VEC2 T;  /* òåêñòóðíàÿ êîîðäèíàòà */
+  VEC N;   /* íîðìàëü */
+  VEC4 C;  /* Öâåò (r,g,b,a) */
 } kh6VERTEX;
-
-
+ 
 /* Primitive type */
 typedef enum tagkh6PRIM_TYPE
 {
@@ -68,8 +52,8 @@ typedef enum tagkh6PRIM_TYPE
   KH6_RND_PRIM_LINES,    /* Line segments (by 2 points) – GL_LINES */
   KH6_RND_PRIM_TRIMESH,  /* Triangle mesh - array of triangles – GL_TRIANGLES */
   KH6_RND_PRIM_TRISTRIP,
-} kh6PRIM_TYPE; 
-
+} kh6PRIM_TYPE;
+ 
 /* Primitive representation type */
 typedef struct tagkh6PRIM
 {
@@ -85,100 +69,21 @@ typedef struct tagkh6PRIM
   VEC MinBB, MaxBB;  /* Bound box */
  
   MATR Trans;   /* Additional transformation matrix */
-
-  INT MtlNo;    /*Material number of shader */
+  INT MtlNo; /* Material number at stock array */
+  INT ShdNo;
 } kh6PRIM;
-
-
+ 
 /* Primitive collection data type */
 typedef struct tagkh6PRIMS
 {
   INT NumOfPrims; /* Number of primitives in array */  
   kh6PRIM *Prims; /* Array of primitives */
+  VEC MinBB, MaxBB; 
   MATR Trans;     /* Common transformation matrix */
-  VEC MaxBB, MinBB;
 } kh6PRIMS;
  
-/* Create primitive function.
- * ARGUMENTS:
- *   - pointer to primitive to create:
- *       kh6PRIM *Pr;
- *   - primitive type:
- *       kh6PRIM_TYPE Type;
- *   - vertex attributes array:
- *       kh6VERTEX *V;
- *   - vertex attributes array size:
- *       INT NoofV;
- *   - primitive vertex index array:
- *       INT *Ind;
- *   - primitive vertex index array size:
- *       INT NoofI;
- * RETURNS: None.
- */
-VOID KH6_RndPrimCreate( kh6PRIM *Pr, kh6PRIM_TYPE Type,
-                        kh6VERTEX *V, INT NoofV, INT *Ind, INT NoofI );
+extern MATR KH6_RndPrimsLoadTransform;
  
-/* Primitive free function.
- * ARGUMENTS:
- *   - primitive to be free:
- *       kh6PRIM *Pr;
- * RETURNS: None.
- */
-VOID KH6_RndPrimFree( kh6PRIM *Pr );
- 
-/* Primitive draw function.
- * ARGUMENTS:
- *   - primitive to be draw:
- *       kh6PRIM *Pr;
- *   - transformation matrix:
- *       MATR World;
- * RETURNS: None.
- */
-VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World );
- 
-/* Primitive free function.
- * ARGUMENTS:
- *   - primitive to be load:
- *       kh6PRIM *Pr;
- *   - primitve filename (.OBJ):
- *       CHAR *FileName;
- * RETURNS:
- *   (BOOL) TRUE if success, FLASE otherwise.
- */
-BOOL KH6_RndPrimLoad( kh6PRIM *Pr, CHAR *FileName );
- 
-/* Create sphere primitive function.
- * ARGUMENTS:
- *   - pointer to primitive to create:
- *       kh6PRIM *Pr;
- *   - sphere radius:
- *       DBL R;
- *   - split parts counts:
- *       INT W, H;
- * RETURNS:
- *   (BOOL) TRUE if success, FALSE otherwise.
- */
-BOOL KH6_RndPrimCreateSphere( kh6PRIM *Pr, DBL R, INT W, INT H );
-
-/* Create cilinder primitive function.
- * ARGUMENTS:
- *   - pointer to primitive to create:
- *       kh6PRIM *Pr;
- *   - cilinder radius:
- *       DBL R;
- *   - split parts counts:
- *       INT W, H;
- * RETURNS:
- *   (BOOL) TRUE if success, FALSE otherwise.
- */
-BOOL KH6_RndPrimCilinder( kh6PRIM *Pr, DBL R, INT W, INT H );
-
-VOID KH6_RndPrimTriMeshAutoNormals( kh6VERTEX *V, INT NumOfV, INT *Ind, INT NumOfI);
-
-VOID APIENTRY glDebugOutput( UINT Source, UINT Type, UINT Id, UINT Severity,
-                             INT Length, const CHAR *Message,
-                             const VOID *UserParam );
-
 /* Grid topology representation type */
 typedef struct tagkh6GRID
 {
@@ -186,56 +91,42 @@ typedef struct tagkh6GRID
   kh6VERTEX *V;  /* Array (2D) of vertex */
 } kh6GRID;
  
+extern INT KH6_RndShdAddonI[8]; 
+extern FLT KH6_RndShdAddonF[8];
+extern VEC KH6_RndShdAddonV[8];
  
-/* Create grid function.
- * ARGUMENTS:
- *   - grid data:
- *       kh6GRID *G;
- *   - grid size:
- *       INT W, H;
- * RETURNS:
- *   (BOOL) TRUE if success, FALSE otherwise.
- */
+VOID APIENTRY glDebugOutput( UINT Source, UINT Type, UINT Id, UINT Severity,
+                             INT Length, const CHAR *Message,
+                             const VOID *UserParam );
+ 
+ 
+VOID KH6_RndPrimCreate( kh6PRIM *Pr, kh6PRIM_TYPE Type,
+                        kh6VERTEX *V, INT NoofV, INT *Ind, INT NoofI );
+VOID KH6_RndPrimFree( kh6PRIM *Pr );
+VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World );
+BOOL KH6_RndPrimLoad( kh6PRIM *Pr, CHAR *FileName );
+BOOL KH6_RndPrimCreateSphere( kh6PRIM *Pr, DBL R, INT W, INT H ); 
+BOOL KH6_RndPrimCreateÑylinder( kh6PRIM *Pr, DBL R, INT W, INT H );
+/* BOOL KH6_RndPrimCreateThor( kh6PRIM *Pr, DBL R, INT W, INT H ); */
+BOOL KH6_RndPrimLoad( kh6PRIM *Pr, CHAR *FileName );
+VOID KH6_RndPrimTriMeshAutoNormals( kh6VERTEX *V, INT NumOfV, INT *Ind, INT NumOfI);
+ 
+ 
 BOOL KH6_RndGridCreate( kh6GRID *G, INT W, INT H );
- 
-/* Free grid function.
- * ARGUMENTS:
- *   - grid data:
- *       kh6GRID *G;
- * RETURNS: None.
- */
-VOID KH6_RndGridFree( kh6GRID *G );
- 
-/* Create primitive from grid function.
- * ARGUMENTS:
- *   - primitive to be create:
- *       kh6PRIM *Pr;
- *   - grid data:
- *       kh6GRID *G;
- * RETURNS: None.
- */
+VOID KH6_RndGridFree( kh6GRID *G ); 
 VOID KH6_RndPrimFromGrid( kh6PRIM *Pr, kh6GRID *G );
- 
-/* Build grid normals function.
- * ARGUMENTS:
- *   - grid data:
- *       kh6GRID *G;
- * RETURNS: None.
- */
 VOID KH6_RndGridAutoNormals( kh6GRID *G );
- 
-/* Create sphere grid function.
- * ARGUMENTS:
- *   - grid data:
- *       kh6GRID *G;
- *   - sphere radius:
- *       FLT R;
- *   - grid size:
- *       INT W, H;
- * RETURNS:
- *   (BOOL) TRUE if success, FALSE otherwise.
- */
 BOOL KH6_RndGridCreateSphere( kh6GRID *G, FLT R, INT W, INT H );
+ 
+ 
+BOOL KH6_RndPrimsCreate( kh6PRIMS *Prs, INT NumOfPrims );
+VOID KH6_RndPrimsFree( kh6PRIMS *Prs );
+VOID KH6_RndPrimsDraw( kh6PRIMS *Prs, MATR World );
+BOOL KH6_RndPrimsLoad( kh6PRIMS *Prs, CHAR *FileName );
 
-
-#endif /* __rnd_h_ */
+BOOL KH6_RndFntLoad( CHAR *FileName );
+VOID KH6_RndFntInit( VOID );
+VOID KH6_RndFntClose( VOID );
+VOID KH6_RndFntDraw3D( CHAR *Str, VEC Pos, FLT Size );
+VOID KH6_RndFntDrawBB( CHAR *Str, VEC Pos, FLT Size );
+VOID KH6_RndFntDraw( CHAR *Str, VEC Pos, FLT Size );

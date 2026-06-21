@@ -1,20 +1,25 @@
-/* FILE NAME: rndbase.c
- * PROGRAMMER: KH6
- * DATE: 11.06.2026
- */                                    
-
+/* FILE NAME  : rndbase.c
+ * PROGRAMMER : KH6
+ * LAST UPDATE: 09.06.2026
+ */
+ 
+#include <time.h>
+ 
 #include "rnd.h"
-#include <wglew.h>
+#include <GL/wglew.h>
 #include <GL/wglext.h>
-
-#pragma comment(lib, "opengl32")
+ 
+#include "GL/glu.h"
+ 
+#pragma comment(lib, "opengl32") 
 #pragma comment(lib, "glu32")
-
+ 
+ 
 VOID KH6_RndInit( HWND hWnd )
 {
   INT i, nums;
-  HGLRC hRC;
   PIXELFORMATDESCRIPTOR pfd = {0};
+  HGLRC hRC;
   INT PixelAttribs[] =
   {
     WGL_DRAW_TO_WINDOW_ARB, TRUE,
@@ -31,10 +36,10 @@ VOID KH6_RndInit( HWND hWnd )
     WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
     WGL_CONTEXT_MINOR_VERSION_ARB, 6,
     WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
-                               /* WGL_CONTEXT_CORE_PROFILE_BIT_ARB, */
+                                  /* WGL_CONTEXT_CORE_PROFILE_BIT_ARB, */
     0
   };
- 
+  
   KH6_hRndWnd = hWnd;
  
   /* Prepare frame compatible device contesxt */
@@ -55,12 +60,13 @@ VOID KH6_RndInit( HWND hWnd )
   KH6_hRndGLRC = wglCreateContext(KH6_hRndDC);
   wglMakeCurrent(KH6_hRndDC, KH6_hRndGLRC);
  
-  /* Enable a new OpenGL profile support */
-  if(glewInit() != GLEW_OK)
+  if (glewInit() != GLEW_OK)
     exit(0);
-
+ 
+  /* Enable a new OpenGL profile support */
   wglChoosePixelFormatARB(KH6_hRndDC, PixelAttribs, NULL, 1, &i, &nums);
   hRC = wglCreateContextAttribsARB(KH6_hRndDC, NULL, ContextAttribs);
+ 
   if (hRC != NULL)
   {
     wglMakeCurrent(NULL, NULL);
@@ -68,7 +74,7 @@ VOID KH6_RndInit( HWND hWnd )
     KH6_hRndGLRC = hRC;
     wglMakeCurrent(KH6_hRndDC, KH6_hRndGLRC);
   }
-
+ 
 #ifndef NDEBUG
   OutputDebugString(glGetString(GL_VERSION));
   OutputDebugString("\n");
@@ -76,31 +82,37 @@ VOID KH6_RndInit( HWND hWnd )
   OutputDebugString("\n");
   OutputDebugString(glGetString(GL_RENDERER));
   OutputDebugString("\n");
-
-  glEnable(GL_DEBUG_OUTPUT);
-  glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-  glDebugMessageCallback(glDebugOutput, NULL);
+ 
+  //glEnable(GL_DEBUG_OUTPUT);
+  //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+  //glDebugMessageCallback(glDebugOutput, NULL);
 #endif /* NDEBUG */
-
+ 
   /* Render parameters setup */
   glEnable(GL_DEPTH_TEST);
   wglSwapIntervalEXT(0);
-
+ 
+  KH6_RndProjSize = 0.1;
+  KH6_RndProjDist = KH6_RndProjSize;
+  KH6_RndProjFarClip = 3000;
+  KH6_RndFrameW = 47;
+  KH6_RndFrameH = 47;
+ 
   KH6_RndResize(47, 47);
   KH6_RndCamSet(VecSet(5, 5, 5), VecSet(0, 0, 0), VecSet(0, 1, 0));
-  
-  KH6_RndRestInit();
+ 
+  KH6_RndResInit();
 }
-
+ 
 VOID KH6_RndClose( VOID )
 {
-  KH6_RndRestClose();
-
+  KH6_RndResClose();
+ 
   wglMakeCurrent(NULL, NULL);
   wglDeleteContext(KH6_hRndGLRC);
   ReleaseDC(KH6_hRndWnd, KH6_hRndDC);
 }
-
+ 
 VOID KH6_RndResize( INT W, INT H )
 {
   glViewport(0, 0, W, H);
@@ -111,48 +123,30 @@ VOID KH6_RndResize( INT W, INT H )
  
   KH6_RndProjSet();
 }
-
+ 
 VOID KH6_RndCopyFrame( VOID )
 {
   SwapBuffers(KH6_hRndDC);
 }
-
+ 
+ 
 VOID KH6_RndStart( VOID )
 {
-
-  VEC4 ClearColor = {0.3, 0.47, 0.8, 1};
+  VEC4 ClearColor = {0.30, 0.47, 0.8, 1};
   FLT DepthClearValue = 1;
  
   KH6_RndShdUpdate();
-
+ 
   /* Clear frame */
   glClearBufferfv(GL_COLOR, 0, &ClearColor.X);
   glClearBufferfv(GL_DEPTH, 0, &DepthClearValue);
 }
-
+ 
 VOID KH6_RndEnd( VOID )
 {
   glFinish();
 }
  
- VOID KH6_RndCamSet( VEC Loc, VEC At, VEC Up1 )
-{
-  KH6_RndMatrView = MatrView(Loc, At, Up1);
-  KH6_RndMatrVP = MatrMulMatr(KH6_RndMatrView, KH6_RndMatrProj);
-  
-  KH6_RndCamLoc = Loc;
-  KH6_RndCamAt = At;
-  KH6_RndCamRight = VecSet(KH6_RndMatrView.A[0][0],
-                           KH6_RndMatrView.A[1][0],
-                           KH6_RndMatrView.A[2][0]);
-  KH6_RndCamUp = VecSet(KH6_RndMatrView.A[0][1],
-                        KH6_RndMatrView.A[1][1],
-                        KH6_RndMatrView.A[2][1]);
-  KH6_RndCamDir = VecSet(-KH6_RndMatrView.A[0][2],
-                         -KH6_RndMatrView.A[1][2],
-                         -KH6_RndMatrView.A[2][2]);
-}
-
 VOID KH6_RndProjSet( VOID )
 {
   DBL rx, ry;
@@ -168,6 +162,21 @@ VOID KH6_RndProjSet( VOID )
       KH6_RndProjDist, KH6_RndProjFarClip);
   KH6_RndMatrVP = MatrMulMatr(KH6_RndMatrView, KH6_RndMatrProj);
 }
-
- 
- 
+  
+VOID KH6_RndCamSet( VEC Loc, VEC At, VEC Up )
+{
+  KH6_RndMatrView = MatrView(Loc, At, Up);
+   
+  KH6_RndCamRight = VecSet(KH6_RndMatrView.A[0][0],
+                           KH6_RndMatrView.A[1][0],
+                           KH6_RndMatrView.A[2][0]);
+  KH6_RndCamUp = VecSet(KH6_RndMatrView.A[0][1],
+                        KH6_RndMatrView.A[1][1],
+                        KH6_RndMatrView.A[2][1]);
+  KH6_RndCamDir = VecSet(-KH6_RndMatrView.A[0][2],
+                         -KH6_RndMatrView.A[1][2],
+                         -KH6_RndMatrView.A[2][2]);
+  KH6_RndCamLoc = Loc;
+  KH6_RndCamAt = At;
+  KH6_RndMatrVP = MatrMulMatr(KH6_RndMatrView, KH6_RndMatrProj);
+}

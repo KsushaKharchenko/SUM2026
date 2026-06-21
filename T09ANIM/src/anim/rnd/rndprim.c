@@ -4,7 +4,6 @@
  */
 #include <string.h>
 #include <stdio.h>
-
 #include "anim/anim.h"
  
 /* Create primitive function.
@@ -83,8 +82,8 @@ VOID KH6_RndPrimCreate( kh6PRIM *Pr, kh6PRIM_TYPE Type,
   else
     Pr->NumOfElements = NoofV;
 } /* End of 'KH6_RndPrimCreate' function */
-
-
+ 
+ 
 /* Primitive free function.
  * ARGUMENTS:
  *   - primitive to be free:
@@ -93,9 +92,6 @@ VOID KH6_RndPrimCreate( kh6PRIM *Pr, kh6PRIM_TYPE Type,
  */
 VOID KH6_RndPrimFree( kh6PRIM *Pr )
 {
-  if (Pr == NULL)
-    return;
-
   glDeleteVertexArrays(1, &Pr->VA);
   glDeleteBuffers(1, &Pr->VBuf);
   glDeleteBuffers(1, &Pr->IBuf);
@@ -112,29 +108,24 @@ VOID KH6_RndPrimFree( kh6PRIM *Pr )
  */
 VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
 {
-  MATR w, winv, wvp;
+  MATR
+    w = MatrMulMatr(Pr->Trans, World),
+    winv = MatrTranspose(MatrInverse(w)),
+    wvp = MatrMulMatr(w, KH6_RndMatrVP);
   UINT ProgId;
-  INT loc, prim_type;
-
-  if (Pr == NULL)
-    return;
-
-  w = MatrMulMatr(Pr->Trans, World);
-  winv = MatrTranspose(MatrInverse(w));
-  wvp = MatrMulMatr(w, KH6_RndMatrVP);
-
-  prim_type =
-    Pr->Type == KH6_RND_PRIM_LINES ? GL_LINES :
-    Pr->Type == KH6_RND_PRIM_TRIMESH ? GL_TRIANGLES :
-    Pr->Type == KH6_RND_PRIM_TRISTRIP ? GL_TRIANGLE_STRIP :
-    GL_POINTS;
-
-  ProgId = KH6_RndShaders[Pr->MtlNo].ProgId;
-  if (ProgId == 0)
-    return;
-
-  glUseProgram(ProgId);
+  INT loc, i,
+    prim_type =
+      Pr->Type == KH6_RND_PRIM_LINES ? GL_LINES :
+      Pr->Type == KH6_RND_PRIM_TRIMESH ? GL_TRIANGLES :
+      Pr->Type == KH6_RND_PRIM_TRISTRIP ? GL_TRIANGLE_STRIP :
+      GL_POINTS;
  
+ 
+  /*glLoadMatrixf(wvp.A[0]);*/
+ 
+  if ((ProgId = KH6_RndMtlApply(Pr->MtlNo)) == 0)
+    return;
+  glUseProgram(ProgId);
   /* Pass render uniforms */
   if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
@@ -142,15 +133,32 @@ VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
     glUniformMatrix4fv(loc, 1, FALSE, w.A[0]);
   if ((loc = glGetUniformLocation(ProgId, "MatrWInv")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, winv.A[0]);
-  if ((loc = glGetUniformLocation(ProgId, "MatrWInv")) != -1)
-    glUniformMatrix4fv(loc, 1, FALSE, winv.A[0]);
   if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
     glUniform1f(loc, KH6_Anim.Time);
   if ((loc = glGetUniformLocation(ProgId, "GlobalTime")) != -1)
+    glUniform1f(loc, KH6_Anim.GlobalTime);  
+  if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1)
+    glUniform3fv(loc, 1, &KH6_RndCamLoc.X); 
+ 
+  for (i = 0; i < 8; i++)
+  {
+    CHAR name[] = "AddonI0";
+ 
+    name[6] = '0' + i;
+    if ((loc = glGetUniformLocation(ProgId, name)) != -1)
+      glUniform1iv(loc, 1, &KH6_RndShdAddonI[i]); 
+    name[5] = 'F';
+    if ((loc = glGetUniformLocation(ProgId, name)) != -1)
+      glUniform1fv(loc, 1, &KH6_RndShdAddonF[i]);
+    name[6] = 'V';
+    if ((loc = glGetUniformLocation(ProgId, name)) != -1)
+      glUniform1fv(loc, 1, &KH6_RndShdAddonV[i].X);
+ 
+  }
     glUniform1f(loc, KH6_Anim.GlobalTime);
-  //if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1)
-    //glUniform3fv(loc, 1, &KH6_RndCamLoc.X);
-
+  if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1)
+    glUniform3fv(loc, 1, &KH6_RndCamLoc.X);
+ 
   glBindVertexArray(Pr->VA);
   if (Pr->IBuf == 0)
     glDrawArrays(prim_type, 0, Pr->NumOfElements);
@@ -161,10 +169,9 @@ VOID KH6_RndPrimDraw( kh6PRIM *Pr, MATR World )
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
   glBindVertexArray(0);
-
-  glUseProgram(0);
+  glUseProgram(0); 
 } /* End of 'KH6_RndPrimDraw' function */
-
+ 
 /* Create sphere primitive function.
  * ARGUMENTS:
  *   - pointer to primitive to create:
@@ -185,14 +192,14 @@ BOOL KH6_RndPrimCreateSphere( kh6PRIM *Pr, DBL R, INT W, INT H )
   kh6VERTEX *V;
   INT *Ind;
   INT size;
-
+ 
   memset(Pr, 0, sizeof(kh6PRIM));
   size = sizeof(kh6VERTEX) * W * H + sizeof(INT) * (H - 1) * (W - 1) * 2 * 3;
-
+ 
   if ((V = malloc(size)) == NULL)
     return FALSE;
   Ind = (INT *)(V + W * H);
-
+ 
   /* Fill vertex array */
   for (k = 0, i = 0, theta = 0; i < H; i++, theta += PI / (H - 1))
     for (j = 0, phi = 0; j < W; j++, phi += 2 * PI / (W - 1))
@@ -223,17 +230,18 @@ BOOL KH6_RndPrimCreateSphere( kh6PRIM *Pr, DBL R, INT W, INT H )
       Ind[k++] = (i + 1) * W + j + 1;
     }
   KH6_RndPrimCreate(Pr, KH6_RND_PRIM_TRIMESH, V, W * H, Ind, (H - 1) * (W - 1) * 2 * 3);
+  free(V);
   return TRUE;
 } /* End of 'KH6_RndPrimCreateSphere' function */
-
-
+ 
+ 
 VOID KH6_RndPrimTriMeshAutoNormals( kh6VERTEX *V, INT NumOfV, INT *Ind, INT NumOfI)
 {
   INT i;
-
+ 
   for (i = 0; i < NumOfV; i++)
     V[i].N = VecSet(0, 0, 0);
-
+ 
   for (i = 0; i < NumOfI; i += 3)
   {
     VEC
@@ -241,16 +249,16 @@ VOID KH6_RndPrimTriMeshAutoNormals( kh6VERTEX *V, INT NumOfV, INT *Ind, INT NumO
       p1 = V[Ind[i + 1]].P,
       p2 = V[Ind[i + 2]].P,
       N = VecNormalize(VecCrossVec(VecSubVec(p1, p0), VecSubVec(p2, p0)));
-
+ 
     V[Ind[i]].N = VecAddVec(V[Ind[i]].N, N);
     V[Ind[i + 1]].N = VecAddVec(V[Ind[i + 1]].N, N);
     V[Ind[i + 2]].N = VecAddVec(V[Ind[i + 2]].N, N);
   }
-
+ 
   for (i = 0; i < NumOfV; i++)
     V[i].N = VecNormalize(V[i].N);
 }
-
+ 
 /* Primitive free function.
  * ARGUMENTS:
  *   - primitive to be load:
@@ -269,8 +277,8 @@ BOOL KH6_RndPrimLoad( kh6PRIM *Pr, CHAR *FileName )
   INT *Ind;
   static CHAR Buf[3000];
   INT size;
-
-
+ 
+ 
   memset(Pr, 0, sizeof(kh6PRIM));
  
   if ((F = fopen(FileName, "r")) == NULL)
@@ -296,14 +304,14 @@ BOOL KH6_RndPrimLoad( kh6PRIM *Pr, CHAR *FileName )
       nf += n - 2;
     }
   }
-
+ 
   size = sizeof(kh6VERTEX) * nv + sizeof(INT) * nf * 3;
-
+ 
   if ((V = malloc(size)) == NULL)
     return FALSE;
   Ind = (INT *)(V + nv);
-
-
+ 
+ 
   /* Load model */
   rewind(F);
   nv = 0;
@@ -356,17 +364,16 @@ BOOL KH6_RndPrimLoad( kh6PRIM *Pr, CHAR *FileName )
   }
   fclose(F);
   KH6_RndPrimTriMeshAutoNormals(V, nv, Ind, nf);
-
+ 
   for (i = 0; i < nv; i++)
   {
     FLT nl = VecDotVec(L, V[i].N);
-
+ 
     if (nl < 0.1)
       nl = 0.1;
     V[i].C = Vec4SetVec3(VecMulNum(VecSet(0.8, 0.30, 0.47), nl * 1.30));
   }
   KH6_RndPrimCreate(Pr, KH6_RND_PRIM_TRIMESH, V, nv, Ind, nf);
+  free(V);
   return TRUE;
 } /* End of 'KH6_RndPrimLoad' function */
-
-

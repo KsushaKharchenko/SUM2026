@@ -1,9 +1,9 @@
-/* FILE NAME: unit.c
- * PROGRAMMER: KH6
- * DATE: 11.06.2026
+/* FILE NAME  : unit.c
+ * PROGRAMMER : KH6
+ * LAST UPDATE: 11.06.2026
  */
-#include "anim/anim.h"
-
+ 
+#include "anim.h"
 /* Unit initialization function.
  * ARGUMENTS:
  *   - self-pointer to unit object:
@@ -37,7 +37,7 @@ static VOID KH6_UnitClose( kh6UNIT *Uni, kh6ANIM *Ani )
  * RETURNS: None.
  */
 static VOID KH6_UnitResponse( kh6UNIT *Uni, kh6ANIM *Ani )
-{ 
+{
 } /* End of 'KH6_UnitResponse' function */
  
 /* Unit render function.
@@ -51,7 +51,6 @@ static VOID KH6_UnitResponse( kh6UNIT *Uni, kh6ANIM *Ani )
 static VOID KH6_UnitRender( kh6UNIT *Uni, kh6ANIM *Ani )
 {
 } /* End of 'KH6_UnitRender' function */
-
  
 /* Unit creation function.
  * ARGUMENTS:

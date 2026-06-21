@@ -93,7 +93,7 @@ static VOID KH6_UnitRender( kh6UNIT_TEX *Uni, kh6ANIM *Ani )
  * RETURNS:
  *   (kh6UNIT *) pointer to created unit.
  */
-kh6UNIT * KH6_UnitCreateTexture( VOID )
+kh6UNIT * KH6_AnimUnitCreateTexture( VOID )
 {
   kh6UNIT *Uni;
  

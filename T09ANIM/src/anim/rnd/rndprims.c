@@ -24,8 +24,7 @@ MATR KH6_RndPrimsLoadTransform =
     {0, 0, 0, 1}
   }
 };
-
-INT KH6_RndShdAddonI[10];
+ 
  
 /* Create array of primitives function.
  * ARGUMENTS:
@@ -78,7 +77,7 @@ VOID KH6_RndPrimsDraw( kh6PRIMS *Prs, MATR World )
 {
   INT i;
   MATR m = MatrMulMatr(Prs->Trans, World);
-
+ 
   KH6_RndShdAddonI[0] = Prs->NumOfPrims;
   /* Draw all nontransparent primitives */ 
   for (i = 0; i < Prs->NumOfPrims; i++)
@@ -205,7 +204,7 @@ BOOL KH6_RndPrimsLoad( kh6PRIMS *Prs, CHAR *FileName )
     }
  
     KH6_RndPrimCreate(&Prs->Prims[p], KH6_RND_PRIM_TRIMESH, V, NumOfVertexes, Ind, NumOfFacetIndexes);
-    Prs->Prims[p].MtlNo = KH6_RndMaterialSize + MtlNo;
+    Prs->Prims[p].MtlNo = KH6_RndMaterialsSize + MtlNo;
   }
  
   /* Materials */

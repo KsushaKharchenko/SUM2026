@@ -15,7 +15,10 @@
  
 /* Degrees to radians conversion */
 #define D2R(A) ((A) * (PI / 180.0))
-#define Degree2Radian(a) D2R(a)
+#define DEG2RAD(a) D2R(a)
+/* Convert radians to degrees */
+#define R2D(A) ((A) * (180.0 / PI))
+#define RAD2DEG(A) R2D(A)
 
 #define VecAddVec3(A, B, C) VecAddVec(A, VecAddVec(B, C))
 #define VecAddVec4(A, B, C, Â) VecAddVec(VecAddVec(A, B), VecAddVec(C, D))
@@ -326,7 +329,7 @@ _inline MATR MatrRotateZ( FLT AngleInDegree )
 
 _inline MATR MatrRotate( VEC P, FLT AngleInDegree )
 {
-  FLT c = cos(AngleInDegree), s = sin(AngleInDegree);
+  FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
 
   return MatrSet(        c + P.X * P.X * (1 - c),   P.Z * s + P.X * P.Y * (1 - c), - P.Y * s + P.X * P.Z * (1 - c), 0,
                  - P.Z * s + P.X * P.Y * (1 - c),         c + P.Y * P.Y * (1 - c),   P.X * s + P.Y * P.Z * (1 - c), 0,
@@ -376,7 +379,7 @@ _inline FLT MatrDeterm( MATR M )
     M.A[0][2] * MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][3],
                               M.A[2][0], M.A[2][1], M.A[2][3],
                               M.A[3][0], M.A[3][1], M.A[3][3]) +
-    -M.A[0][2] * MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][2],
+    -M.A[0][3] * MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][2],
                                M.A[2][0], M.A[2][1], M.A[2][2],
                                M.A[3][0], M.A[3][1], M.A[3][2]);
 }

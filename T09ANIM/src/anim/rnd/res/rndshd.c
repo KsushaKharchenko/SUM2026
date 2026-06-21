@@ -1,19 +1,17 @@
 /* FILE NAME  : rndshd.c
  * PROGRAMMER : KH6
  * LAST UPDATE: 13.06.2026
-*/
-
-
+ */
+ 
 #include <stdio.h>
 #include <time.h>
-
 #include "anim/rnd/rnd.h"
  
-
-kh6SHADER KH6_RndShaders[KH6_MAX_SHADERS];
-/* Shadres array store size */
-INT KH6_RndShadersSize;
-
+ 
+/***
+ * Base shaders functions
+ ***/
+ 
 /* Save log to file function.
  * ARGUMENTS:
  *   - shader prefix:
@@ -206,6 +204,12 @@ static VOID KH6_RndShdFree( UINT ProgId )
  * Shaders stock functions
  ***/
  
+/* Array of shaders */
+kh6SHADER KH6_RndShaders[KH6_MAX_SHADERS];
+ 
+/* Shadres array store size */
+INT KH6_RndShadersSize;
+ 
 /* Add shader to stock from file function.
  * ARGUMENTS:
  *   - shader file path to load:
@@ -263,4 +267,3 @@ VOID KH6_RndShdClose( VOID )
     KH6_RndShdFree(KH6_RndShaders[i].ProgId);
   KH6_RndShadersSize = 0;
 } /* End of 'KH6_RndShdClose' function */
-/* END OF 'rndshd.c' FILE */

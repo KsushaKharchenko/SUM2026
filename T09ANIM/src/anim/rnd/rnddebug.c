@@ -1,12 +1,14 @@
-/* FILE NAME  : rnddebg.c
+/* FILE NAME  : rnddebug.c
  * PROGRAMMER : KH6
  * LAST UPDATE: 17.06.2026
-*/
-
+ * PURPOSE    : 3D animation project.
+ *              Rendering OpenGL debug handle module.
+ */
+ 
 #include <stdio.h>
-
+ 
 #include "rnd.h"
-
+ 
 /* Debug output function.
  * ARGUMENTS:
  *   - source APi or device:
@@ -92,6 +94,7 @@ VOID APIENTRY glDebugOutput( UINT Source, UINT Type, UINT Id, UINT Severity,
     len += wsprintf(Buf + len, "Type: Other");
     break;
   }
+ 
   len += wsprintf(Buf + len, "\n");
  
   switch (Severity)
@@ -112,9 +115,11 @@ VOID APIENTRY glDebugOutput( UINT Source, UINT Type, UINT Id, UINT Severity,
  
   len += wsprintf(Buf + len, "\n\n");
  
-  OutputDebugString(Buf);
+  /* OutputDebugString(Buf); */
  
   printf("\x1b[38;2;255;100;100m\x1b[38;2;255;150;130m%s\n"
     "\x1b[38;2;255;255;255m", Buf);
   /* printf(Buf); */
 } /* End of 'glDebugOutput' function */
+ 
+/* END OF 'rnddebug.c' FILE */

@@ -1,23 +1,25 @@
 /* FILE NAME  : rndtex.c
  * PROGRAMMER : KH6
  * LAST UPDATE: 17.06.2026
-*/
-
-#include "anim/rnd/rnd.h" 
-
-kh6TEXTURE KH6_RndTextures[KH6_MAX_TEXTURES];
+ */
+ 
+#include <string.h>
+#include <stdio.h>
+#include "anim/rnd/rnd.h"
+ 
+/* Array of textures */
+kh6TEXTURES KH6_RndTextures[KH6_MAX_TEXTURES];
+/* Textures array store size */
 INT KH6_RndTexturesSize;
-
+ 
 VOID KH6_RndTexInit( VOID )
 {
-  KH6_RndTexturesSize = 0;
 }
-
+ 
 VOID KH6_RndTexClose( VOID )
 {
-  KH6_RndTexturesSize = 0;
 }
-
+ 
 /* Add texture to stock function.
  * ARGUMENTS:
  *   - texture name:
@@ -118,6 +120,8 @@ INT KH6_RndTexAddFromFile( CHAR *FileName )
   }
   return ret;
 } /* End of 'KH6_RndTexAddFromFile' function */
-
-
-/* END OF 'rndtex.c' FILE */
+ 
+INT KH6_RndTexAdd( CHAR *FileName )
+{
+  return 0;
+}

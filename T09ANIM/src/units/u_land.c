@@ -16,6 +16,7 @@ static VOID KH6_UnitInit( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
  
   HBITMAP hBm;
   BITMAP bm;
+
  
   if ((hBm = LoadImage(NULL, "bin/height/hf.bmp", IMAGE_BITMAP, 0, 0,
                        LR_LOADFROMFILE | LR_CREATEDIBSECTION)) != NULL)
@@ -30,20 +31,15 @@ static VOID KH6_UnitInit( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
     {
       BYTE *Bits = bm.bmBits;
       INT x, y;
-      FLT size = 1;
+      FLT size = 100;
 
       for (y = 0; y < h; y++)
         for (x = 0; x < w; x++)
         {
           INT hgt = Bits[(h - 1 - y) * bm.bmWidthBytes + x];
- 
-<<<<<<< HEAD
+
           G.V[y * G.W + x].P = VecSet((2 * x / (w - 1.0) - 1) * size,
-                                    10 * hgt / 255.0,
-=======
-          G.V[y * w + x].P = VecSet((2 * x / (w - 1.0) - 1) * size,
-                                    1 * hgt / 255.0,
->>>>>>> dbac5203c39a27a45d4b61303f66654af4a663cc
+                                    10 * hgt / 255.0, 
                                     (1 - 2 * y / (h - 1.0)) * size);
         }
       KH6_RndGridAutoNormals(&G);
@@ -99,7 +95,7 @@ static VOID KH6_UnitRender( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
  * RETURNS:
  *   (kh6UNIT *) pointer to created unit.
  */
-kh6UNIT * KH6_UnitCreateLand( VOID )
+kh6UNIT * KH6_AnimUnitCreateLand( VOID )
 {
   kh6UNIT *Uni;
  

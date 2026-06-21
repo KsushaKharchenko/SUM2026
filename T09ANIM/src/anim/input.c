@@ -36,6 +36,22 @@ VOID KH6_AnimMouseInit( HWND hWnd )
 
   GetCursorPos(&pt);
   ScreenToClient(hWnd, &pt);
+  
+  KH6_Anim.Mx = pt.x;
+  KH6_Anim.My = pt.y;
+
+  KH6_Anim.Mdx = 0;
+  KH6_Anim.Mdy = 0;
+  KH6_Anim.Mdz = 0;
+  KH6_Anim.Mz = 0;
+}
+
+VOID KH6_AnimMouseResponse( VOID )
+{
+  POINT pt;
+
+  GetCursorPos(&pt);
+  ScreenToClient(KH6_Anim.hWnd, &pt);
 
   KH6_Anim.Mdx = pt.x - KH6_Anim.Mx;
   KH6_Anim.Mdy = pt.y - KH6_Anim.My;
@@ -48,8 +64,6 @@ VOID KH6_AnimMouseInit( HWND hWnd )
   KH6_MouseWheel = 0;
 }
 
-//VOID KH6_AnimMouseResponse( VOID )
-
 //VOID KH6_AnimJoystickInit( VOID );
 //VOID KH6_AnimJoystickResponse( VOID );
 
@@ -61,4 +75,5 @@ VOID KH6_AnimInputInit( VOID )
 VOID KH6_AnimInputResponse( VOID )
 {
   KH6_KeyboardResponse();
+  KH6_AnimMouseResponse();
 }

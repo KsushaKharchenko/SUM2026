@@ -1,33 +1,41 @@
-/* FILE NAME: timer.c
- * PROGRAMMER: KH6
- * DATE: 11.06.2026
+/* FILE NAME  : timer.c
+ * PROGRAMMER : KH6
+ * LAST UPDATE: 09.06.2026
  */
-
 #include "anim.h"
-
-static UINT64 
-    StartTime,    /* Start program time */
-    OldTime,      /* Previous frame time */
-    OldTimeFPS,   /* Old time FPS measurement */
-    PauseTime,    /* Time during pause period */
-    TimePerSec,   /* Timer resolution */
-    FrameCount; /* Frames counter */
-
-
+ 
+typedef unsigned long long UINT64;
+ 
+DOUBLE GlobalTime, GlobalDeltaTime, /* Global time and interframe interval */
+  Time, DeltaTime,             /* Time with pause and interframe interval */
+  FPS;                         /* Frames per second value */
+BOOL
+  IsPause;                     /* Pause flag */
+ 
+static UINT64
+  StartTime,    /* Start program time */
+  OldTime,      /* Previous frame time */
+  OldTimeFPS,   /* Old time FPS measurement */
+  PauseTime,    /* Time during pause period */
+  TimePerSec,   /* Timer resolution */
+  FrameCounter; /* Frames counter */
+ 
 VOID KH6_TimerInit( VOID )
 {
   LARGE_INTEGER t;
  
   QueryPerformanceFrequency(&t);
   TimePerSec = t.QuadPart;
-
   QueryPerformanceCounter(&t);
-  StartTime = OldTime = OldTimeFPS = t.QuadPart;
-  FrameCount = 0;
+ 
+  StartTime = t.QuadPart;
+ 
+  FrameCounter = 0;
   KH6_Anim.IsPause = FALSE;
   KH6_Anim.FPS = 30.0;
+  KH6_Anim.Time = KH6_Anim.DeltaTime = 0;
   PauseTime = 0;
-}
+} 
  
 VOID KH6_TimerResponse( VOID )
 {
@@ -36,8 +44,9 @@ VOID KH6_TimerResponse( VOID )
   QueryPerformanceCounter(&t);
  
   /* Global time */
-  KH6_Anim.GlobalTime = (DBL)(t.QuadPart - StartTime) / TimePerSec;
-  KH6_Anim.GlobalDeltaTime = (DBL)(t.QuadPart - OldTime) / TimePerSec;
+  KH6_Anim.GlobalTime = (DOUBLE)(t.QuadPart - StartTime) / TimePerSec;
+  KH6_Anim.GlobalDeltaTime = (DOUBLE)(t.QuadPart - OldTime) / TimePerSec;
+ 
   /* Time with pause */
   if (KH6_Anim.IsPause)
   {
@@ -46,17 +55,17 @@ VOID KH6_TimerResponse( VOID )
   }
   else
   {
-    KH6_Anim.Time = (DBL)(t.QuadPart - PauseTime - StartTime) / TimePerSec;
     KH6_Anim.DeltaTime = KH6_Anim.GlobalDeltaTime;
+    KH6_Anim.Time = (DOUBLE)(t.QuadPart - PauseTime - StartTime) / TimePerSec; 
   }
  
   /* FPS */
-  FrameCount++;
-  if (t.QuadPart - OldTimeFPS > 3 * TimePerSec)
+  FrameCounter++;
+  if (t.QuadPart - OldTimeFPS > TimePerSec)
   {
-    KH6_Anim.FPS = FrameCount * TimePerSec / (DBL)(t.QuadPart - OldTimeFPS);
+    KH6_Anim.FPS = FrameCounter * TimePerSec / (DOUBLE)(t.QuadPart - OldTimeFPS);
     OldTimeFPS = t.QuadPart;
-    FrameCount = 0;
+    FrameCounter = 0;
   }
   OldTime = t.QuadPart;
 }

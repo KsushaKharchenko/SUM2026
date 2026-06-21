@@ -1,86 +1,46 @@
 /* FILE NAME  : u_ball.c
  * PROGRAMMER : KH6
- * LAST UPDATE: 12.06.2026
+ * LAST UPDATE: 11.06.2026
  */
-
+ 
 #include "units.h"
-
+ 
 typedef struct tagkh6UNIT_BALL
 {
   KH6_UNIT_BASE_FIELDS;
-  kh6PRIM Ball;               /*ball primitive*/
   VEC Pos;
-  DBL Scale, Shift;              
-}kh6UNIT_BALL;
-
+  kh6PRIM Ball;
+} kh6UNIT_BALL;
+ 
 static VOID KH6_UnitInit( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimCreateSphere(&Uni->Ball, 0.2, 18, 8);
-  Uni->Pos = VecSet(Rnd1()* 3, 1, Rnd1()* 3); 
-  Uni->Scale = Rnd1() * 0.5 + 3;
-  Uni->Shift = Rnd1() * 33 + 1;
-} /* End of 'KH6_UnitInit' function */
+  KH6_RndPrimCreateSphere(&Uni->Ball, 0.1, 30, 12);
+  Uni->Pos = VecSet(Rnd1() * 4, 1, Rnd1() * 4);
+}
  
-/* Unit deinitialization function.
- * ARGUMENTS:
- *   - self-pointer to unit object:
- *       kh6UNIT_BALL *Uni;
- *   - animation context:
- *       kh6ANIM *Ani;
- * RETURNS: None.
- */
 static VOID KH6_UnitClose( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimFree(&Uni->Ball);
-} /* End of 'KH6_UnitClose' function */
+  KH6_RndPrimFree(&Uni->Ball); 
+}
  
-/* Unit inter frame events handle function.
- * ARGUMENTS:
- *   - self-pointer to unit object:
- *       kh6UNIT_BALL *Uni;
- *   - animation context:
- *       kh6ANIM *Ani;
- * RETURNS: None.
- */
 static VOID KH6_UnitResponse( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
 {
-} /* End of 'KH6_UnitResponse' function */
+} 
  
-/* Unit render function.
- * ARGUMENTS:
- *   - self-pointer to unit object:
- *       kh6UNIT_BALL *Uni;
- *   - animation context:
- *       kh6ANIM *Ani;
- * RETURNS: None.
- */
 static VOID KH6_UnitRender( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimDraw(&Uni->Ball, MatrTranslate(VecAddVec(Uni->Pos, 
-                  VecSet(0, fabs(sin(Ani->Time + Uni->Shift * Uni->Scale)), 0))));
-} /* End of 'KH6_UnitRender' function */
-
+  KH6_RndPrimDraw(&Uni->Ball, MatrTranslate(VecAddVec(Uni->Pos, VecSet(0, fabs(sin(5 * Ani->Time)), 0))));
+}
  
-/* Unit creation function.
- * ARGUMENTS:
- *   - unit structure size in bytes:
- *       INT Size;
- * RETURNS:
- *   (kh6UNIT *) pointer to created unit.
- */
-kh6UNIT * KH6_UnitCreateBall( VOID )
+kh6UNIT * KH6_AnimUnitCreateBall( VOID )
 {
-  kh6UNIT *Uni;
+  kh6UNIT_BALL *Uni;
  
-  /* Memory allocation */
-  if ((Uni = KH6_AnimUnitCreate(sizeof(kh6UNIT_BALL))) == NULL)
+  if ((Uni = (kh6UNIT_BALL *)KH6_AnimUnitCreate(sizeof(kh6UNIT_BALL))) == NULL)
     return NULL;
  
-  /* Setup unit methods */
   Uni->Init = (VOID *)KH6_UnitInit;
-  Uni->Close = (VOID *)KH6_UnitClose;
   Uni->Response = (VOID *)KH6_UnitResponse;
   Uni->Render = (VOID *)KH6_UnitRender;
- 
-  return Uni;
-} /* End of 'KH6_AnimUnitCreate' function */
+  return (kh6UNIT *)Uni;
+}

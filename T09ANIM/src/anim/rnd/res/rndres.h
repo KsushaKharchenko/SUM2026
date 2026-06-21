@@ -1,144 +1,86 @@
 /* FILE NAME  : rndres.h
  * PROGRAMMER : KH6
  * LAST UPDATE: 13.06.2026
-*/
-
+ */
+ 
 #ifndef __rndres_h_
 #define __rndres_h_
-
+ 
 #include "def.h"
-
-#define KH6_STR_MAX 300
-
-VOID KH6_RndRestInit( VOID );
-VOID KH6_RndRestClose( VOID );
-
-/* SHADERS GROUP */
-
+ 
+ 
+VOID KH6_RndResInit( VOID );
+VOID KH6_RndResClose( VOID );
+ 
+#define KH6_STR_MAX 3000
+ 
 /* Shaders stock maximum size */
 #define KH6_MAX_SHADERS 30
-
 /* Shader program store type */
 typedef struct tagkh6SHADER
 {
-  CHAR Name[KH6_STR_MAX]; /* Shader filename prefix */
+  CHAR Name[KH6_STR_MAX]; /* Shader filename prefix */      
   UINT ProgId;            /* Shader program Id */
 } kh6SHADER;
-
 /* Array of shaders */
 extern kh6SHADER KH6_RndShaders[KH6_MAX_SHADERS];
 /* Shadres array store size */
 extern INT KH6_RndShadersSize;
-
-VOID KH6_RndShdInit( VOID );
-
-VOID KH6_RndShdClose( VOID );
-
-INT KH6_RndShdAdd( CHAR *ShaderFileNamePrefix );
-
-VOID KH6_RndShdUpdate( VOID );
-
-/* TEXTURE GROUP */
-
+ 
 /* Textures stock maximum size */
-#define KH6_MAX_TEXTURES 102
-
-/* Texture program store type */
-typedef struct tagkh6TEXTURE
+#define KH6_MAX_TEXTURES 300
+/* Textures program store type */
+typedef struct tagkh6TEXTURES
 {
-  CHAR Name[KH6_STR_MAX]; /*Texture name*/
-  INT W, H;              /*Texture size in pixels */
-  UINT TexId;           /*OpenGL texture id */
-}kh6TEXTURE;
-
+  CHAR Name[KH6_STR_MAX]; /* Texture name */
+  INT W, H;               /* Texture size in pixels */
+  UINT TexId;             /* OpenGL texture Id */  
+} kh6TEXTURES;
 /* Array of textures */
-extern kh6TEXTURE KH6_RndTextures[KH6_MAX_TEXTURES];
+extern kh6TEXTURES KH6_RndTextures[KH6_MAX_TEXTURES];
 /* Textures array store size */
-extern INT KH6_RndTexturesSize;
-
-VOID KH6_RndTexInit( VOID );
-
-VOID KH6_RndTexClose( VOID );
-
-INT KH6_RndTexAddImg( CHAR *Name, INT W, INT H, INT C, VOID *Bits );
-
-INT KH6_RndTexAddFromFile( CHAR *FileName );
-
-/* MATERIALS GROUP */
-
-/* Materials stock maximum size */
-#define KH6_MAX_MATERIALS 30
-
-/* Material program store type */
+extern INT KH6_RndTexturesSize;  
+ 
+/* Materials program store type */
 typedef struct tagkh6MATERIAL
 {
-  CHAR Name[KH6_STR_MAX]; /*Texture name*/
-  /* illumination coefficients */
-  VEC Ka, Kd, Ks;        /*Ambient, diffuse, specular coefficients */
-  FLT Ph;               /*Phong power coefficient */
-  FLT Trans;           
-  INT Tex[8];
-  INT ShdNo;
-}kh6MATERIAL;
-
-/* Array of shaders */
-extern kh6MATERIAL KH6_RndMaterials[KH6_MAX_MATERIALS];
-/* Shadres array store size */
-extern INT KH6_RndMaterialSize;
-
-VOID KH6_RndMtlInit( VOID );
-
-VOID KH6_RndMtlClose( VOID );
-
-INT KH6_RndMtlAdd( kh6MATERIAL *Mtl );
-
-UINT KH6_RndMtlApply( INT MtlNo );
-
+  CHAR Name[KH6_STR_MAX]; /* Material name */
+ 
+  /* Illumination coefficients */    
+  VEC Ka, Kd, Ks;           /* Ambient, diffuse, specular coefficients */
+  FLT Ph;                   /* Phong power coefficient */
+ 
+  FLT Trans;                /* Transparency factor */
+ 
+  INT Tex[8];               /* Texture references from texture table (or -1) */
+ 
+  INT ShdNo;                /* Shader number in shader table */ 
+} kh6MATERIAL;
+/* Materials stock maximum size */
+#define KH6_MAX_MATERIALS 300
+/* Array of materials */
+extern kh6MATERIAL KH6_RndMaterials[KH6_MAX_MATERIALS]; 
+/* Materials array store size */
+extern INT KH6_RndMaterialsSize;
+ 
+ 
+ 
+ 
+INT KH6_RndShdAdd( CHAR *ShaderFileNamePrefix );
+VOID KH6_RndShdUpdate( VOID );
+VOID KH6_RndShdInit( VOID );
+VOID KH6_RndShdClose( VOID );
+ 
+VOID KH6_RndTexInit( VOID );
+VOID KH6_RndTexClose( VOID );
+INT KH6_RndTexAddImg( CHAR *Name, INT W, INT H, INT C, VOID *Bits );
+INT KH6_RndTexAdd( CHAR *FileName );
+ 
 kh6MATERIAL KH6_RndMtlGetDef( VOID );
-
+VOID KH6_RndMtlInit( VOID ); 
+VOID KH6_RndMtlClose( VOID );
+INT KH6_RndMtlAdd( kh6MATERIAL *Mtl );
+UINT KH6_RndMtlApply( INT MtlNo ); 
 kh6MATERIAL * KH6_RndMtlGet( INT MtlNo );
-
-/* Font description structure */
-typedef struct tagkh6FONT
-{
-  DWORD LineH, BaseH; /* Font line height and base line height in pixels */
-  FLT AdvanceX[256];  /* Every letter shift right value (0 if no letter present) */
-} kh6FONT;
-
-/* Load font from .G3DF file function.
- * ARGUMENTS:
- *   - font file name:
- *       CHAR *FileName;
- * RETURNS:
- *   (BOOL) TRUE if success, FALSE otherwise.
- */
-BOOL KH6_RndFntLoad( CHAR *FileName );
-
-/* Init font subsystem function.
- * ARGUMENTS: None.
- * RETURNS: None.
- */
-VOID KH6_RndFntInit( VOID );
-
-/* Deinit font subsystem function.
- * ARGUMENTS: None.
- * RETURNS: None.
- */
-VOID KH6_RndFntClose( VOID );
-
-/* Draw string function.
- * ARGUMENTS:
- *   - string to draw:
- *       CHAR *Str;
- *   - draw position:
- *       VEC Pos;
- *   - font size:
- *      FLT Size;
- * RETURNS: None.
- */
-VOID KH6_RndFntDraw( CHAR *Str, VEC Pos, FLT Size );
-
-
-
-
+ 
 #endif /* __rndres_h_ */
