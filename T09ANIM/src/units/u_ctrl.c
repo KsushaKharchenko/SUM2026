@@ -9,14 +9,11 @@
 typedef struct tagkh6UNIT_CONTROL
 {
   KH6_UNIT_BASE_FIELDS;
-  VEC CamLoc, CamAt;
   DBL Speed;
 } kh6UNIT_CONTROL;
  
 static VOID KH6_UnitInit( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
 {
-  Uni->CamLoc = VecSet(8, 8, 8);
-  Uni->CamAt = VecSet(0, 0, 0);
   Uni->Speed = 1;
 }
  

@@ -24,7 +24,7 @@
 #define VecAddVec4(A, B, C, Â) VecAddVec(VecAddVec(A, B), VecAddVec(C, D))
 
 #define MatrMulMatr3(A, B, C) MatrMulMatr(A, MatrMulMatr(B, C))
-#define MatrMulMatr4(A, B, C, Â) MatrMulMatr(MatrMulMatr(A, B), MatrMulMatr(C, D))
+#define MatrMulMatr4(A, B, C, D) MatrMulMatr(MatrMulMatr(A, B), MatrMulMatr(C, D))
 #define MatrMulMatr5(A, B, C, D, E) MatrMulMatr3(A, B, MatrMulMatr3(C, D, E))
 
 #define UnitMatrix \

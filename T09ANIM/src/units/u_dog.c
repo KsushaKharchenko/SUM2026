@@ -17,6 +17,7 @@ typedef struct tagkh6UNIT_DOG
   VEC DogPos;
 
   FLT Speed,
+      WalkTime,
       DogAngle;
 
   BOOL IsMoving;
@@ -34,6 +35,7 @@ static VOID KH6_UnitInit( kh6UNIT_DOG *Uni, kh6ANIM *Ani )
   Uni->Land.Trans = m;*/
   Uni->DogPos = VecSet(10, 10, 10);
   Uni->DogAngle = 0;
+  Uni->WalkTime = 0;
   Uni->IsMoving = FALSE;
 }
  
@@ -49,46 +51,55 @@ static VOID KH6_UnitClose( kh6UNIT_DOG *Uni, kh6ANIM *Ani )
 static VOID KH6_UnitResponse( kh6UNIT_DOG *Uni, kh6ANIM *Ani )
 {
   VEC NewPos;
+  BOOL Moving = FALSE;
 
-  if (Ani->KeysClick['W'])
+  if (Ani->Keys['W'])
   {
     NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(0, 0, -1), Ani->DeltaTime * Uni->Speed));
     Uni->DogAngle = 0;
-    Uni->IsMoving = TRUE;
+    Moving = TRUE;
 
   }
-  if (Ani->KeysClick['S'])
+  if (Ani->Keys['S'])
   {
     NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(0, 0, 1), Ani->DeltaTime * Uni->Speed));
     Uni->DogAngle = 180;
-    Uni->IsMoving = TRUE;
+    Moving = TRUE;
   }
-  if (Ani->KeysClick['A'])
+  if (Ani->Keys['A'])
   {
     NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(-1, 0, 0), Ani->DeltaTime * Uni->Speed));
     Uni->DogAngle = -90;
-    Uni->IsMoving = TRUE;
+    Moving = TRUE;
   }
-  if (Ani->KeysClick['D'])
+  if (Ani->Keys['D'])
   {
     NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(1, 0, 0), Ani->DeltaTime * Uni->Speed));
     Uni->DogAngle = 90;
-    Uni->IsMoving = TRUE;
+    Moving = TRUE;
   }
 
-  if (Uni->IsMoving)
+  if (Moving)
   {
+    NewPos.X = max(-3.0, min(3.0, NewPos.X));
+    NewPos.Z = max(-3.0, min(3.0, NewPos.Z));
     Uni->DogPos = NewPos;
     Uni->IsMoving = TRUE;
+    Uni->WalkTime += Ani->DeltaTime * 3;
   }
   else
+  {
     Uni->IsMoving = FALSE;
+    Uni->WalkTime = 0;
+  }
 } 
  
 static VOID KH6_UnitRender( kh6UNIT_DOG *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimsDraw(&Uni->Dog, MatrMulMatr(MatrRotateY(90), MatrTranslate(VecSet(0, 5, 0))));
-  KH6_RndPrimsDraw(&Uni->Land, MatrIdentity());
+  KH6_RndPrimsDraw(&Uni->Dog, MatrMulMatr(MatrRotateY(40 + Uni->DogAngle), 
+    MatrTranslate(VecSet(0, 0, 0))));
+  KH6_RndPrimsDraw(&Uni->Land, MatrMulMatr4(MatrRotateZ(-2), MatrRotateY(300), 
+                               MatrRotateX(-3), MatrTranslate(VecSet(-40, -7.15, -280))));
   //KH6_RndPrimsDraw(&Uni->DogHouse, MatrIdentity());
   //KH6_RndPrimsDraw(&Uni->DogToy, MatrIdentity());
   //KH6_RndPrimsDraw(&Uni->DogBowl, MatrIdentity());

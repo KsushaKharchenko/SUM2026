@@ -8,7 +8,7 @@
 #define __rnd_h_
 
 #define GLEW_STATIC
-#include <glew.h>
+#include <GL/glew.h>
  
 #include "res/rndres.h"
  

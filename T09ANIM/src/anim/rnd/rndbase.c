@@ -6,7 +6,7 @@
 #include <time.h>
  
 #include "rnd.h"
-#include <wglew.h>
+#include <GL/wglew.h>
 #include <gl/wglext.h>
 
 #pragma comment(lib, "opengl32")
@@ -97,7 +97,7 @@ VOID KH6_RndInit( HWND hWnd )
   KH6_RndFrameH = 47;
  
   KH6_RndResize(47, 47);
-  KH6_RndCamSet(VecSet(5, 5, 5), VecSet(0, 0, 0), VecSet(0, 1, 0));
+  KH6_RndCamSet(VecSet(6, 0, 6), VecSet(0, 0, 0), VecSet(0, 1, 0));
  
   KH6_RndResInit();
 }
