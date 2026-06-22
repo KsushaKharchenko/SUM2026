@@ -1,11 +1,14 @@
 /* FILE NAME: rnd.h
  * PURPOSE: 3D math implementation module.
  * PROGRAMMER: KH6
- * DATE: 09.06.2026
+ * DATE: 21.06.2026
  */
  
+#ifndef __rnd_h_
+#define __rnd_h_
+
 #define GLEW_STATIC
-#include <GL/glew.h>
+#include <glew.h>
  
 #include "res/rndres.h"
  
@@ -130,3 +133,5 @@ VOID KH6_RndFntClose( VOID );
 VOID KH6_RndFntDraw3D( CHAR *Str, VEC Pos, FLT Size );
 VOID KH6_RndFntDrawBB( CHAR *Str, VEC Pos, FLT Size );
 VOID KH6_RndFntDraw( CHAR *Str, VEC Pos, FLT Size );
+
+#endif /* __rnd_h_ */

@@ -23,7 +23,7 @@ static VOID KH6_UnitClose( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
  
 static VOID KH6_UnitRender( kh6UNIT_LAND *Uni, kh6ANIM *Ani )
 {
-  INT s = 2, i, j;
+  INT s = 0, i, j;
  
   for (i = -s; i <= s; i++)  
     for (j = -s; j <= s; j++)

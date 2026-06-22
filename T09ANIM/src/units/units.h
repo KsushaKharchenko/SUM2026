@@ -11,3 +11,4 @@ kh6UNIT * KH6_AnimUnitCreateControl( VOID );
 kh6UNIT * KH6_AnimUnitCreateLand( VOID );
 kh6UNIT * KH6_AnimUnitCreateTexture( VOID );   
 kh6UNIT * KH6_AnimUnitCreateG3DM( VOID );
+kh6UNIT * KH6_AnimUnitCreateDOG( VOID );

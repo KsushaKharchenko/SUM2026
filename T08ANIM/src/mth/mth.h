@@ -22,6 +22,7 @@
 
 #define MatrMulMatr3(A, B, C) MatrMulMatr(A, MatrMulMatr(B, C))
 #define MatrMulMatr4(A, B, C, В) MatrMulMatr(MatrMulMatr(A, B), MatrMulMatr(C, D))
+#define MatrMulMatr5(A, B, C, D, E) MatrMulMatr3(A, B, MatrMulMatr3(C, D, E))
 
 #define UnitMatrix \
 {                  \
@@ -128,13 +129,13 @@ _inline VEC VecNeg( VEC V )
   return VecSet(-V.X, -V.Y, -V.Z);
 }
 
-/* скалярное произведение векторов */
+/* */
 _inline DBL VecDotVec( VEC V1, VEC V2 )
 {
   return (V1.X * V2.X + V1.Y * V2.Y + V1.Z * V2.Z);
 }
  
-/* векторное произведение векторов */
+/* */
 _inline VEC VecCrossVec( VEC V1, VEC V2 )
 {
   return VecSet(V1.Y * V2.Z - V1.Z * V2.Y, V1.Z * V2.X - V1.X * V2.Z, V1.X * V2.Y - V1.Y * V2.X);

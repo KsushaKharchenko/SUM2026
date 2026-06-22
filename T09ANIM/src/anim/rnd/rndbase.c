@@ -6,12 +6,10 @@
 #include <time.h>
  
 #include "rnd.h"
-#include <GL/wglew.h>
-#include <GL/wglext.h>
- 
-#include "GL/glu.h"
- 
-#pragma comment(lib, "opengl32") 
+#include <wglew.h>
+#include <gl/wglext.h>
+
+#pragma comment(lib, "opengl32")
 #pragma comment(lib, "glu32")
  
  

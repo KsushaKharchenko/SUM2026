@@ -71,9 +71,10 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *Cmdline,
   //for (i = 0; i < 30; i++)
    // KH6_AnimAddUnit(KH6_UnitCreateBall());
   //KH6_AnimAddUnit(KH6_AnimUnitCreateCow());
-  KH6_AnimAddUnit(KH6_AnimUnitCreateLand());
+  //KH6_AnimAddUnit(KH6_AnimUnitCreateLand());
   //KH6_AnimAddUnit(KH6_AnimUnitCreateTexture());
   //KH6_AnimAddUnit(KH6_AnimUnitCreateG3DM());
+  KH6_AnimAddUnit(KH6_AnimUnitCreateDOG());
 
 
   /* main program loop */

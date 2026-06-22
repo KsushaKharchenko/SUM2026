@@ -20,7 +20,7 @@ typedef struct tagkh6UNIT_CONTROL
 static VOID KH6_UnitInit( kh6UNIT_CONTROL *Uni, kh6ANIM *Ani )
 {
   KH6_RndCamLoc = VecSet(8, 8, 8);
-  KH6_RndCamAt = VecSet(0, 0, 0);
+  KH6_RndCamAt = VecSet(3, 2, 3);
   Uni->Speed = 10;
 } /* End of 'KH6_UnitInit' function */
 
