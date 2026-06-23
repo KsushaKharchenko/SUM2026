@@ -1,4 +1,4 @@
-/* FILE NAME  : u_g2dm.c
+/* FILE NAME  : u_g3dm.c
  * PROGRAMMER : KH6
  * LAST UPDATE: 11.06.2026
  */
@@ -13,7 +13,7 @@ typedef struct tagkh6UNIT_G3DM
  
 static VOID KH6_UnitInit( kh6UNIT_G3DM *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimsLoad(&Uni->Model, "bin/models/Giraf.g3dm");
+  KH6_RndPrimsLoad(&Uni->Model, "bin/models/house.g3dm");
 }
  
 static VOID KH6_UnitClose( kh6UNIT_G3DM *Uni, kh6ANIM *Ani )

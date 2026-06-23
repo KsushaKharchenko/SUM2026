@@ -310,6 +310,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\units\u_dogbowl.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\u_doghouse.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\u_dogland.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\u_dogtoy.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\units\u_g3dm.c"
 					>
 				</File>

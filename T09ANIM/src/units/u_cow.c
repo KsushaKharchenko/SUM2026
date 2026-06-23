@@ -39,7 +39,7 @@ kh6UNIT * KH6_AnimUnitCreateCow( VOID )
 {
   kh6UNIT *Uni;
  
-  if ((Uni = KH6_AnimUnitCreate(sizeof(kh6UNIT_LAND))) == NULL)
+  if ((Uni = KH6_AnimUnitCreate(sizeof(kh6UNIT))) == NULL)
     return NULL;
  
   Uni->Init = (VOID *)KH6_UnitInit;

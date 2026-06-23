@@ -100,7 +100,7 @@ kh6UNIT * KH6_AnimUnitCreateLand( VOID )
   kh6UNIT *Uni;
  
   /* Memory allocation */
-  if ((Uni = KH6_AnimUnitCreate(sizeof(kh6UNIT_LAND))) == NULL)
+  if ((Uni = KH6_AnimUnitCreate(sizeof(kh6UNIT))) == NULL)
     return NULL;
  
   /* Setup unit methods */

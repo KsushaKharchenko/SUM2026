@@ -34,9 +34,9 @@ static VOID KH6_UnitRender( kh6UNIT_BALL *Uni, kh6ANIM *Ani )
  
 kh6UNIT * KH6_AnimUnitCreateBall( VOID )
 {
-  kh6UNIT_BALL *Uni;
+  kh6UNIT *Uni;
  
-  if ((Uni = (kh6UNIT_BALL *)KH6_AnimUnitCreate(sizeof(kh6UNIT_BALL))) == NULL)
+  if ((Uni = (kh6UNIT*)KH6_AnimUnitCreate(sizeof(kh6UNIT))) == NULL)
     return NULL;
  
   Uni->Init = (VOID *)KH6_UnitInit;

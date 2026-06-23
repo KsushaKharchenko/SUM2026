@@ -1,4 +1,4 @@
-/* FILE NAME  : u_g2dm.c
+/* FILE NAME  : u_dog.c
  * PROGRAMMER : KH6
  * LAST UPDATE: 11.06.2026
  */
@@ -9,43 +9,30 @@ typedef struct tagkh6UNIT_DOG
 {
   KH6_UNIT_BASE_FIELDS;
   kh6PRIMS Dog;
-  kh6PRIMS Land;
-  kh6PRIMS DogToy;
-  kh6PRIMS DogHouse;
-  kh6PRIMS DogBowl;
-
   VEC DogPos;
 
   FLT Speed,
       WalkTime,
-      DogAngle;
+      DogAngle,
+      PosAngle;
 
   BOOL IsMoving;
 } kh6UNIT_DOG;
  
 static VOID KH6_UnitInit( kh6UNIT_DOG *Uni, kh6ANIM *Ani )
 {
-  //VEC B;
-  //MATR m;
-  
-  KH6_RndPrimsLoad(&Uni->Dog, "bin/models/dog.g3dm");
-  KH6_RndPrimsLoad(&Uni->Land, "bin/models/land2.g3dm");
-  /*B = VecSubVec(Uni->Land.MaxBB, Uni->Land.MinBB);
-  m = MatrMulMatr(MatrTranslate(VecAddVec(VecNeg(Uni->Land.MinBB), VecSet(-B.X / 2, 0, -B.Z / 2))), MatrScale(VecSet1(1 / B.Y)));
-  Uni->Land.Trans = m;*/
-  Uni->DogPos = VecSet(10, 10, 10);
-  Uni->DogAngle = 0;
+  KH6_RndPrimsLoad(&Uni->Dog, "bin/models/dog/dog.g3dm");
+  Uni->DogPos = VecSet(0, -5.4, 0);
+  Uni->DogAngle = 40;
+  Uni->Speed = 2.0;
   Uni->WalkTime = 0;
+  Uni->PosAngle = 0;
   Uni->IsMoving = FALSE;
 }
  
 static VOID KH6_UnitClose( kh6UNIT_DOG *Uni, kh6ANIM *Ani )
 {
   KH6_RndPrimsFree(&Uni->Dog); 
-  KH6_RndPrimsFree(&Uni->Land); 
-  //KH6_RndPrimsFree(&Uni->DogToy); 
-  //KH6_RndPrimsFree(&Uni->DogHouse);
-  //KH6_RndPrimsFree(&Uni->DogBowl);
 }
  
 static VOID KH6_UnitResponse( kh6UNIT_DOG *Uni, kh6ANIM *Ani )
@@ -55,34 +42,31 @@ static VOID KH6_UnitResponse( kh6UNIT_DOG *Uni, kh6ANIM *Ani )
 
   if (Ani->Keys['W'])
   {
-    NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(0, 0, -1), Ani->DeltaTime * Uni->Speed));
-    Uni->DogAngle = 0;
+    NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(1, 0, 1), Ani->DeltaTime * Uni->Speed));
+    Uni->DogAngle = 40;
     Moving = TRUE;
-
   }
   if (Ani->Keys['S'])
   {
-    NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(0, 0, 1), Ani->DeltaTime * Uni->Speed));
-    Uni->DogAngle = 180;
+    NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(-1, 0, -1), Ani->DeltaTime * Uni->Speed));
+    Uni->DogAngle = 220;
     Moving = TRUE;
   }
   if (Ani->Keys['A'])
   {
-    NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(-1, 0, 0), Ani->DeltaTime * Uni->Speed));
-    Uni->DogAngle = -90;
+    NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(-1, 0, 1), Ani->DeltaTime * Uni->Speed));
+    Uni->DogAngle = -50;
     Moving = TRUE;
   }
   if (Ani->Keys['D'])
   {
-    NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(1, 0, 0), Ani->DeltaTime * Uni->Speed));
-    Uni->DogAngle = 90;
+    NewPos = VecAddVec(Uni->DogPos, VecMulNum(VecSet(1, 0, -1), Ani->DeltaTime * Uni->Speed));
+    Uni->DogAngle = 130;
     Moving = TRUE;
   }
 
   if (Moving)
   {
-    NewPos.X = max(-3.0, min(3.0, NewPos.X));
-    NewPos.Z = max(-3.0, min(3.0, NewPos.Z));
     Uni->DogPos = NewPos;
     Uni->IsMoving = TRUE;
     Uni->WalkTime += Ani->DeltaTime * 3;
@@ -96,20 +80,14 @@ static VOID KH6_UnitResponse( kh6UNIT_DOG *Uni, kh6ANIM *Ani )
  
 static VOID KH6_UnitRender( kh6UNIT_DOG *Uni, kh6ANIM *Ani )
 {
-  KH6_RndPrimsDraw(&Uni->Dog, MatrMulMatr(MatrRotateY(40 + Uni->DogAngle), 
-    MatrTranslate(VecSet(0, 0, 0))));
-  KH6_RndPrimsDraw(&Uni->Land, MatrMulMatr4(MatrRotateZ(-2), MatrRotateY(300), 
-                               MatrRotateX(-3), MatrTranslate(VecSet(-40, -7.15, -280))));
-  //KH6_RndPrimsDraw(&Uni->DogHouse, MatrIdentity());
-  //KH6_RndPrimsDraw(&Uni->DogToy, MatrIdentity());
-  //KH6_RndPrimsDraw(&Uni->DogBowl, MatrIdentity());
+  KH6_RndPrimsDraw(&Uni->Dog, MatrMulMatr(MatrRotateY(Uni->DogAngle), MatrTranslate(Uni->DogPos)));
 }
  
 kh6UNIT * KH6_AnimUnitCreateDOG( VOID )
 {
-  kh6UNIT_DOG *Uni;
+  kh6UNIT *Uni;
  
-  if ((Uni = (kh6UNIT_DOG *)KH6_AnimUnitCreate(sizeof(kh6UNIT_DOG))) == NULL)
+  if ((Uni = KH6_AnimUnitCreate(sizeof(kh6UNIT_DOG))) == NULL)
     return NULL;
  
   Uni->Init = (VOID *)KH6_UnitInit;

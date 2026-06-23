@@ -12,3 +12,7 @@ kh6UNIT * KH6_AnimUnitCreateLand( VOID );
 kh6UNIT * KH6_AnimUnitCreateTexture( VOID );   
 kh6UNIT * KH6_AnimUnitCreateG3DM( VOID );
 kh6UNIT * KH6_AnimUnitCreateDOG( VOID );
+kh6UNIT * KH6_AnimUnitCreateLAND( VOID );
+kh6UNIT * KH6_AnimUnitCreateBOWL( VOID );
+kh6UNIT * KH6_AnimUnitCreateHOUSE( VOID );
+kh6UNIT * KH6_AnimUnitCreateTOY( VOID );
